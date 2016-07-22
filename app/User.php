@@ -10,6 +10,8 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
+use DB;
+
 class User extends Model implements AuthenticatableContract,
                                     AuthorizableContract,
                                     CanResetPasswordContract
@@ -28,7 +30,7 @@ class User extends Model implements AuthenticatableContract,
      *
      * @var array
      */
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = ['nom', 'prenom', 'email', 'password'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -36,4 +38,28 @@ class User extends Model implements AuthenticatableContract,
      * @var array
      */
     protected $hidden = ['password', 'remember_token'];
+
+    public function fullName() {
+        if($this->nom && $this->prenom) {
+            return ucfirst(strtolower($this->nom)) . ' ' . ucfirst(strtolower($this->prenom));
+        } 
+        if($this->nom) {
+            return ucfirst(strtolower($this->nom));
+        }
+        if($this->prenom) {
+            return ucfirst(strtolower($this->prenom));
+        }
+
+        return null;
+    }
+
+    public function deptName() {
+        $deptName = DB::table('departements')->where('id',$this->departement)->value('nom');
+
+        if($deptName) {
+            return '- ' . $deptName;
+        } 
+
+        return null;
+    }
 }
