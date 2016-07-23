@@ -40,6 +40,7 @@
     <script src="{{asset('assets/plugins/datatables/jquery.dataTables.min.js')}}"></script>
     <script src="{{asset('assets/plugins/datatables/dataTables.bootstrap.min.js')}}"></script>
 
+    <script src="{{asset('assets/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js')}}"></script>
     
     <script src="{{asset('assets/bootstrap/js/dialog.js')}}"></script>
     <!-- ChartJS 1.0.1 -->

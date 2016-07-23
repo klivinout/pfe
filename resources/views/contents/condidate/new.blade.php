@@ -35,7 +35,7 @@
             </div>
             <form action="#" method="post">
                 <div class="box-body">
-                    <div class="col-sm-6 form-group{{ $errors->has('') ? ' has-error' : '' }}">
+                    <div class="col-sm-6 form-group{{ $errors->has('prenom') ? ' has-error' : '' }}">
                         <label for="prenom">Prénom : </label>
                         <input type="text" class="form-control" id="prenom" name="prenom" value="{{ Request::old('prenom') ? old('prenom') : '' }}" required>
                     </div>

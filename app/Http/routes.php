@@ -64,5 +64,34 @@ Route::group(['middleware' => 'auth','prefix' => 'admin'] , function () {
 
 	});
 
+	Route::group(['prefix' => 'sujet'] , function () {
+		Route::get('/' , [
+			'uses' => 'SujetController@getNew',
+			'as' => 'newsujet'
+		]);
+		Route::post('/' , [
+			'uses' => 'SujetController@postNew'
+		]);
+		Route::get('/modifier/{id}' , [
+			'uses' => 'SujetController@getModify',
+			'as' => 'modifysujet'
+		]);
+		Route::post('/modifier/{id}' , [
+			'uses' => 'SujetController@postModify'
+		]);
+		Route::get('/attachement/{id}' , [
+			'uses' => 'SujetController@getAttachement',
+			'as' => 'downloadsujetattachement'
+		]);
+		Route::get('/liste' , [
+			'uses' => 'SujetController@theList',
+			'as' => 'listsujet'
+		]);
+		Route::get('/modifieretat/{id}/{etat}' , [
+			'uses' => 'SujetController@modifyEtat',
+			'as' => 'modifysujetetat'
+		]);
+	});
+
 
 });

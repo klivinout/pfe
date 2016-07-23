@@ -36,6 +36,8 @@
   <link rel="stylesheet" href="{{asset('assets/bootstrap/css/jupload/jquery.fileupload.css')}}">
   <link rel="stylesheet" href="{{asset('assets/bootstrap/css/jupload/jquery.fileupload-ui.css')}}">
 
+  <link rel="stylesheet" href="{{asset('assets/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')}}">
+
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
