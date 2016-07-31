@@ -29,14 +29,12 @@ class CreateTables extends Migration
             $table->increments('id');
             $table->integer('stagiaire');
             $table->integer('responsable');
-            $table->date('date_debut');
-            $table->date('date_fin');
-            $table->string('etablissement')->nullable();
-            $table->string('documents')->nullable(); // list of the administration documents in json
+            $table->integer('sujet')->nullable();
             $table->timestamps();
 
             //$table->foreign('stagiaire')->references('id')->on('users');
             //$table->foreign('responsable')->references('id')->on('users');
+            //$table->foreign('sujet')->references('id')->on('sujets');
         });
 
         //create table "taches"

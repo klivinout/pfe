@@ -61,7 +61,6 @@ Route::group(['middleware' => 'auth','prefix' => 'admin'] , function () {
 				'as' => 'api_listcondidate'
 			]);
 		});
-
 	});
 
 	Route::group(['prefix' => 'sujet'] , function () {
@@ -93,5 +92,32 @@ Route::group(['middleware' => 'auth','prefix' => 'admin'] , function () {
 		]);
 	});
 
+	Route::group(['prefix' => 'stagiaire'] , function () {
+		Route::get('/condidat/{id}' , [
+			'uses' => 'StagiaireController@index',
+			'as' => 'newstagiaire'
+		]);
+		Route::post('/condidat/{id}' , [
+			'uses' => 'StagiaireController@postNew'
+		]);
+
+		Route::get('/condidat/{id}/documents/{type}' , [
+			'uses' => 'StagiaireController@getAttachement',
+			'as' => 'downloadcondidatattachement'
+		]);
+
+		Route::get('/liste',[
+			'uses' => 'StagiaireController@theList',
+			'as' => 'liststagiaires'
+		]);
+
+
+		//ajax routes
+
+		route::get('/ajax/deptsrespsujets/{id}' , [
+			'uses' => 'StagiaireController@ajaxDeptsRespAndSujets',
+			'as' => 'ajaxdeptrespanssujets',
+		]);
+	});
 
 });

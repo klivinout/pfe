@@ -24,7 +24,7 @@
     <!-- quick email widget -->
         <div class="box box-info">
             <div class="box-header">
-                <h3 class="box-title">Nouveau condidat</h3>
+                <h3 class="box-title">Liste des Stagiaires</h3>
               <!-- tools box -->
                 <div class="pull-right box-tools">
                     <a href="{{route('newcondidat')}}" class="btn btn-info btn-sm btn-flat">
@@ -35,51 +35,39 @@
             </div>
             <div class="box-body">
                 <div class="col-sm-12">
-                    <table class="table table-striped table-hover" id="listCondidats">
+                    <table class="table table-striped table-hover" id="listStagiaires">
                         <thead>
-                            <th class="col-sm-2">NOM</th>
-                            <th class="col-sm-2">PRENOM</th>
+                            <th class="col-sm-2">NOM et PRENOM</th>
                             <th class="col-sm-2">E-MAIL</th>
                             <th class="col-sm-2">ETABLISSEMENT</th>
                             <th class="col-sm-3">PERIODE</th>
                             <th class="col-sm-2">DEPARTEMENT</th>
+                            <th class="col-sm-2">RESPONSABLE</th>
+                            <th class="col-sm-2">SUJET</th>
                             <th class="col-sm-2">Action</th>
                         </thead>
                         <tbody>
-                            @foreach($condidats as $c)
-                                @if($c->etat == 1)<tr class="success">
+                            @foreach($stagiaires as $s)
+                                @if($s->etat == 1)<tr class="success">
                                 @else <tr>
                                 @endif
-                                    <td class="col-sm-2"> {{$c->nom}} </td>
-                                    <td class="col-sm-2"> {{$c->prenom}} </td>
-                                    <td class="col-sm-2"> {{$c->email}} </td>
-                                    <td class="col-sm-2"> {{$c->etablissement}} </td>
-                                    <td class="col-sm-3"> {{$c->datefrom}} => {{$c->dateend}} </td>
-                                    <td class="col-sm-2"> {{$c->departement}} </td>
+                                    <td class="col-sm-2"> {{$s->nom}} {{$s->prenom}} </td>
+                                    <td class="col-sm-2"> {{$s->email}} </td>
+                                    <td class="col-sm-2"> {{$s->etablissement}} </td>
+                                    <td class="col-sm-3"> {{$s->datefrom}} => {{$s->dateend}} </td>
+                                    <td class="col-sm-2"> {{$s->departement}} </td>
+                                    <td class="col-sm-2"> {{$s->resp_nom}} {{$s->resp_prenom}} </td>
+                                    <td class="col-sm-2"> <a href="{{route('modifysujet' , ['id' => $s->sujet])}}" target="_blank"> {{$s->objet}} </a> </td>
                                     <td class="col-sm-2">
                                         <div class="input-group input-group-sm">
                                             <div class="input-group-btn">
                                                 <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">Actions <span class="fa fa-caret-down"></span></button>
-                                                
                                                 <ul class="dropdown-menu dropdown-menu-right">
-                                                    @if($c->etat == null || $c->etat == 0)
                                                     <li>
-                                                        <a href="{{route('modifycondidat' , ['id'=>$c->id])}}">
-                                                            Consulter ou modifier Condidat
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{route('newstagiaire' , ['id' => $c->id])}}">
-                                                            Confirmer en Stragiaire
-                                                        </a>
-                                                    </li>
-                                                    @else
-                                                    <li>
-                                                        <a href="{{route('newstagiaire' , ['id'=>$c->id])}}">
+                                                        <a href="{{route('newstagiaire' , ['id'=>$s->id])}}">
                                                             Consulter ou modifier Stagiaire
                                                         </a>
                                                     </li>
-                                                    @endif
                                                 </ul>
                                             </div><!-- /btn-group -->
                                         </div><!-- /input-group -->
@@ -98,7 +86,7 @@
 @include('template.footer')
 <script>
     $(document).ready(function() {
-        $('#listCondidats').DataTable();
+        $('#listStagiaires').DataTable();
     } );
 </script>
 </body>

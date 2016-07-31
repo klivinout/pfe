@@ -27,9 +27,9 @@
                 <h3 class="box-title">Nouveau condidat</h3>
               <!-- tools box -->
                 <div class="pull-right box-tools">
-                    <button type="button" class="btn btn-info btn-sm btn-flat">
+                    <a href="{{route('listcondidate')}}" class="btn btn-info btn-sm btn-flat">
                         liste des condidats
-                    </button>
+                    </a>
                 </div>
                 <!-- /. tools -->
             </div>

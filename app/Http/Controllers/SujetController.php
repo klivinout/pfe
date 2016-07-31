@@ -17,10 +17,14 @@ use Auth;
 class SujetController extends Controller
 {
     public function getNew() {
+        if(Auth::User()->type == 3)
+            return redirect()->back()->with('danger','Vous n\'avez pas le droit d\'access !!');
         return view('contents.sujet.new');
     }
 
     public function postNew(Request $request) {
+        if(Auth::User()->type == 3)
+            return redirect()->back()->with('danger','Vous n\'avez pas le droit d\'access !!');
         DB::beginTransaction();
         try {
             $this->validate($request , [
@@ -61,12 +65,16 @@ class SujetController extends Controller
     }
 
     public function getModify($id) {
+        if(Auth::User()->type == 3)
+            return redirect()->back()->with('danger','Vous n\'avez pas le droit d\'access !!');
         $data = DB::table('sujets')->where('id',$id)->first();  
 
         return View::make('contents.sujet.modify' , ['sujet' => $data]);
     }
 
     public function getAttachement($id) {
+        if(Auth::User()->type == 3)
+            return redirect()->back()->with('danger','Vous n\'avez pas le droit d\'access !!');
         $data = DB::table('sujets')->where('id',$id)->first();  
         $file = Storage::disk('upload')->get('/sujet/'.$data->pieces_jointe);
  
@@ -74,6 +82,8 @@ class SujetController extends Controller
     }
 
     public function postModify($id) {
+        if(Auth::User()->type == 3)
+            return redirect()->back()->with('danger','Vous n\'avez pas le droit d\'access !!');
         DB::beginTransaction();
         try {
             $this->validate($request , [
@@ -114,6 +124,8 @@ class SujetController extends Controller
     }
 
     public function theList() {
+        if(Auth::User()->type == 3)
+            return redirect()->back()->with('danger','Vous n\'avez pas le droit d\'access !!');
         $data = DB::table('sujets as s')
             ->join('users as u','u.id','=','s.proposer_par')
             ->join('departements as d','d.id','=','u.departement')
@@ -124,6 +136,8 @@ class SujetController extends Controller
     }
 
     public function modifyEtat($id,$etat) {
+        if(Auth::User()->type == 3)
+            return redirect()->back()->with('danger','Vous n\'avez pas le droit d\'access !!');
         if($etat > 3 || $etat < 0) {
             return redirect()->back()->with('danger','indice de statut non valide');
         } else {
