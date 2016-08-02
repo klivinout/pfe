@@ -54,13 +54,6 @@ Route::group(['middleware' => 'auth','prefix' => 'admin'] , function () {
 			'uses' => 'CondidatController@theList',
 			'as' => 'listcondidate'
 		]);
-
-		Route::group(['prefix' => 'api'] , function () {
-			Route::get('/listcondidats' , [
-				'uses' => 'CondidatController@api_listCondidate',
-				'as' => 'api_listcondidate'
-			]);
-		});
 	});
 
 	Route::group(['prefix' => 'sujet'] , function () {
@@ -118,6 +111,44 @@ Route::group(['middleware' => 'auth','prefix' => 'admin'] , function () {
 			'uses' => 'StagiaireController@ajaxDeptsRespAndSujets',
 			'as' => 'ajaxdeptrespanssujets',
 		]);
+	});
+
+	Route::group(['prefix' => 'tache'] , function () {
+		Route::get('/stage/{id}/{tache}' , [
+			'uses' => 'TacheController@getNew',
+			'as' => 'newtache'
+		]);
+		Route::post('/stage/{id}/{tache}' , [
+			'uses' => 'TacheController@postNew'
+		]);
+
+		Route::group(['prefix' => 'liste'] , function () {
+			Route::get('/' , [
+				'uses' => 'TacheController@theList',
+				'as' => 'listtache'
+			]);
+
+			//ajax routes
+			Route::group(['prefix' => 'ajax'] , function () {
+				Route::get('/stage/{id}' , [
+					'uses' => 'TacheController@theListByStage',
+					'as' => 'ajaxlisttachebystage'
+				]);
+			});
+		});
+		Route::group(['prefix' => 'modifier'] , function () {
+			//ajax routes
+			Route::group(['prefix' => 'ajax'] , function () {
+				Route::get('/tache/{id}' , [
+					'uses' => 'TacheController@getModify',
+					'as' => 'ajaxmodifiertache'
+				]);
+				Route::post('/statut/{id}' , [
+					'uses' => 'TacheController@postStatut',
+					'as' => 'ajaxmodifiertachestatut'
+				]);
+			});
+		});
 	});
 
 });

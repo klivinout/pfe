@@ -49,10 +49,9 @@
     <script>
         swal("Succès!", "{{ Session::get('info') }}", "success");
     </script>
-    @endif
-    @if(Session::has('danger'))
+    @elseif(Session::has('danger'))
     <script>
-        swal("Erreur!", "{{ Session::get('danger') }}", "danger");
+        swal("Erreur!", "{{ Session::get('danger') }}", "error");
     </script>
     @endif
 

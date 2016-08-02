@@ -17,8 +17,6 @@ use Auth;
 class StagiaireController extends Controller
 {
 	public function index($id) {
-		if(Auth::User()->type != 1 && Auth::User()->type != 10)
-            return redirect()->back()->with('danger','Vous n\'avez pas le droit d\'access !!');
 		$condidat = DB::table('condidats')->where('id',$id)->first();
 		$departements = DB::table('departements')->get();
 		$document = 0;
@@ -34,8 +32,6 @@ class StagiaireController extends Controller
 
 
 	public function getAttachement($id,$type) {
-		if(Auth::User()->type == 3)
-			return redirect()->back()->with('danger','Vous n\'avez pas le droit d\'access !!');
 		$document = DB::table('condidats')->where('id',$id)->value('documents');
 		$document = json_decode($document);
 	  	if($type == 'assurence') {
@@ -54,8 +50,6 @@ class StagiaireController extends Controller
 	}
 
 	public function postNew($id , Request $request) {
-		if(Auth::User()->type != 1 && Auth::User()->type != 10)
-            return redirect()->back()->with('danger','Vous n\'avez pas le droit d\'access !!');
 		DB::beginTransaction();
         try {
             $this->validate($request, [
@@ -193,8 +187,6 @@ class StagiaireController extends Controller
 	     * @return \Illuminate\Http\Response
 	     */
 		public function ajaxDeptsRespAndSujets($id) {
-			if(Auth::User()->type != 1 && Auth::User()->type != 10)
-	            return redirect()->back()->with('danger','Vous n\'avez pas le droit d\'access !!');
 
 			$resps = DB::table('users')
 				->select('id','nom','prenom')
