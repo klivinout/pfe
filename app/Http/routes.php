@@ -134,6 +134,10 @@ Route::group(['middleware' => 'auth','prefix' => 'admin'] , function () {
 					'uses' => 'TacheController@theListByStage',
 					'as' => 'ajaxlisttachebystage'
 				]);
+				Route::get('/refrechtache/{id}' , [
+					'uses' => 'TacheController@getRefreshStatut',
+					'as' => 'ajaxrefrechtache'
+				]);
 			});
 		});
 		Route::group(['prefix' => 'modifier'] , function () {

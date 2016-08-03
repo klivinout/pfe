@@ -178,8 +178,29 @@ class TacheController extends Controller
          */
             public function postStatut($id) {
                 $statut = Input::get('statut');
-                $statut = '['.$statut.','.Auth::User()->id.']';
-                $n = DB::table('taches')->where('id',$id)->update(['statut' => $statut]);
-                return Response::json($n);
+                $statutJson = '['.$statut.','.Auth::User()->id.']';
+                $n = DB::table('taches')->where('id',$id)->update(['statut' => $statutJson]);
+                if($n == 1)
+                    return Response::json(['code' => 200,'newstatut' => $statut,'tache'=>$id]);
+                if($n == 0)
+                    return Response::json(['code' => 201,'newstatut' => $statut,'tache'=>$id]);
+                else
+                    return Response::json(['code' => 501]);
+            }
+
+        /**postStatut
+         * returns result of request of task's modifying statut
+         *
+         * @param  id of Tache  $id
+         * @return \Illuminate\Http\Response
+         */
+            public function getRefreshStatut($id) {
+                try {
+                    $statut = DB::table('taches')->where('id',$id)->value('statut');
+                    $statut = json_decode($statut);
+                    return Response::json(['code' => 200,'statut' => $statut[0],'tache'=>$id]);
+                } catch (Exception $e) {
+                    return Response::json(['code' => 501 , 'message' => $e->getMessage()]);
+                }
             }
 }

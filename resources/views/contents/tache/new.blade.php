@@ -135,9 +135,11 @@
                                     <!-- timeline item -->
                                     <li>
                                         @if(is_array($statut))
-                                            @if($statut[0] == -1) <i class="fa fa-envelope bg-red"></i>
+                                            @if($statut[0] == -1) <i id="statutIcon{{$tache->id}}" class="fa fa-thumbs-down bg-red"></i>
+                                            @elseif($statut[0] == 1) <i id="statutIcon{{$tache->id}}" class="fa fa-thumbs-o-up bg-blue"></i>
+                                            @elseif($statut[0] == 10) <i id="statutIcon{{$tache->id}}" class="fa fa-thumbs-up bg-green"></i>
                                             @endif
-                                        @else <i class="fa fa-envelope bg-blue"></i>
+                                        @else <i class="fa fa-hourglass-o bg-blue"></i>
                                         @endif
                                         <div class="timeline-item">
                                             <span class="time"><i class="fa fa-clock-o"></i> {{$tacheDateTime->format('G:i')}}</span>
@@ -151,25 +153,25 @@
                                                 Delai : {{$tache->delai}}
                                             </div>
                                             
-                                            <div class="timeline-footer">
-                                                @if($statut==null || $statut==0)
-                                                <button class="btn btn-primary btn-xs" onclick="modifierTacheStatut({{$tache->id}},1)">
+                                            <div class="timeline-footer" id="statutButtonsDiv{{$tache->id}}">
+                                                @if($statut==null || $statut==0 || $statut[0]==-1)
+                                                <button class="btn btn-primary btn-xs" id="examiner{{$tache->id}}" onclick="modifierTacheStatut({{$tache->id}},1)">
                                                     <i class="fa fa-thumbs-o-up"></i>
                                                 </button>
-                                                <button class="btn btn-success btn-xs" onclick="modifierTacheStatut({{$tache->id}},10)">
+                                                <button class="btn btn-success btn-xs" id="confimer{{$tache->id}}" onclick="modifierTacheStatut({{$tache->id}},10)">
                                                     <i class="fa fa-thumbs-up"></i>
                                                 </button>
-                                                <button class="btn btn-danger btn-xs" onclick="modifierTacheStatut({{$tache->id}},-1)">
+                                                <button class="btn btn-danger btn-xs" id="refuser{{$tache->id}}" onclick="modifierTacheStatut({{$tache->id}},-1)">
                                                     <i class="fa  fa-thumbs-down"></i>
                                                 </button>
                                                 <button class="btn btn-primary btn-xs" onclick="modifierTache({{$tache->id}})">
                                                     <i class="fa  fa-pencil-square-o"></i>Modifier
                                                 </button>
-                                                @elseif($statut[0]==1 || $statut[0]==-1)
-                                                <button class="btn btn-success btn-xs" onclick="modifierTacheStatut({{$tache->id}},1)">
+                                                @elseif($statut[0]==1)
+                                                <button class="btn btn-success btn-xs" id="confimer{{$tache->id}}" onclick="modifierTacheStatut({{$tache->id}},1)">
                                                     <i class="fa fa-thumbs-o-up"></i>
                                                 </button>
-                                                <button class="btn btn-danger btn-xs" onclick="modifierTacheStatut({{$tache->id}},-1)">
+                                                <button class="btn btn-danger btn-xs" id="refuser{{$tache->id}}" onclick="modifierTacheStatut({{$tache->id}},-1)">
                                                     <i class="fa  fa-thumbs-down"></i>
                                                 </button>
                                                 @elseif($statut[0]==10)
@@ -251,6 +253,18 @@
 
 
 @include('template.footer')
+@if(isset($stages))
+<script>
+    function selectStage() {
+        var url = "{{route('newtache' , ['id'=>':id','tache'=>'tout'])}}";
+        stage = $('#stages').val();
+
+        url = url.replace(':id',stage);
+
+        window.location = url;
+    }
+</script>
+@else
 <script>
     function modifierTache(tache) {
         var url = "{{route('ajaxmodifiertache' , ['id'=>':id'])}}";
@@ -267,6 +281,51 @@
         });
     }
 
+    function changeViewStatut(tache,newstatut) {
+        if(newstatut == -1) {
+            $('#statutButtonsDiv'+tache).empty();
+            $('#statutIcon'+tache).attr('class','fa fa-thumbs-down bg-red');
+            $('#statutButtonsDiv'+tache).append('\
+                <button class="btn btn-primary btn-xs" id="examiner'+tache+'" onclick="modifierTacheStatut('+tache+',1)">\
+                    <i class="fa fa-thumbs-o-up"></i>\
+                </button>\
+                <button class="btn btn-success btn-xs" id="confimer'+tache+'" onclick="modifierTacheStatut('+tache+',10)">\
+                    <i class="fa fa-thumbs-up"></i>\
+                </button>\
+                <button class="btn btn-danger btn-xs" id="refuser'+tache+'" onclick="modifierTacheStatut('+tache+',-1)">\
+                    <i class="fa  fa-thumbs-down"></i>\
+                </button>\
+                <button class="btn btn-primary btn-xs" onclick="modifierTache('+tache+')">\
+                    <i class="fa  fa-pencil-square-o"></i>Modifier\
+                </button>\
+                ');
+        } else if(newstatut == 1) {
+
+            $('#statutButtonsDiv'+tache).empty();
+            $('#statutIcon'+tache).attr('class','fa fa-thumbs-o-up bg-blue');
+            $('#statutButtonsDiv'+tache).append('\
+                <button class="btn btn-success btn-xs" id="confimer'+tache+'" onclick="modifierTacheStatut('+tache+',10)">\
+                    <i class="fa fa-thumbs-up"></i>\
+                </button>\
+                <button class="btn btn-danger btn-xs" id="refuser'+tache+'" onclick="modifierTacheStatut('+tache+',-1)">\
+                    <i class="fa  fa-thumbs-down"></i>\
+                </button>\
+                <button class="btn btn-primary btn-xs" onclick="modifierTache('+tache+')">\
+                    <i class="fa  fa-pencil-square-o"></i>Modifier\
+                </button>\
+                ');
+        } else if(newstatut == 10) {
+
+            $('#statutButtonsDiv'+tache).empty();
+            $('#statutIcon'+tache).attr('class','fa fa-thumbs-up bg-green');
+            $('#statutButtonsDiv'+tache).append('\
+                <button class="btn btn-success btn-xs" disabled>\
+                    <i class="fa fa-thumbs-o-up"></i>\
+                </button>\
+                ');
+        }
+    }
+
     function modifierTacheStatut(tache,statut) {
         var url = "{{route('ajaxmodifiertachestatut' , ['id'=>':id'])}}";
         url = url.replace(':id',tache);
@@ -278,22 +337,31 @@
                 '_token' : $('#_token').val()
             },
             function (rep) {
-
+                if(rep.code == 200) {
+                    changeViewStatut(tache,rep.newstatut);
+                } else if(rep.code == 201) {
+                    swal("Vous avez choisie la méme Etat !!");
+                    refreshStatut(rep.tache);
+                }
             }
         );
     }
-</script>
-@if(isset($stages))
-<script>
-    function selectStage() {
-        var url = "{{route('newtache' , ['id'=>':id','tache'=>'tout'])}}";
-        stage = $('#stages').val();
 
-        url = url.replace(':id',stage);
 
-        window.location = url;
+    function refreshStatut(tache) {
+        var url = "{{route('ajaxrefrechtache' , ['id' => ':id'])}}";
+        url = url.replace(':id',tache);
+        $.get(url , function (rep) {
+            changeViewStatut(rep.tache,rep.statut);
+        });
     }
-    
+</script>
+<script type="text/javascript">
+    setInterval(function() {
+        @foreach($taches as $tache)
+        refreshStatut({{$tache->id}});
+        @endforeach
+    }, 5000);
 </script>
 @endif
   </body>
