@@ -17,6 +17,9 @@ use Auth;
 class StagiaireController extends Controller
 {
 	public function index($id) {
+		ifAuth::User()->type ==3) {
+         return redirect()->back()->with('danger','vous n\'avez pas le droit d\'access');
+     	}
 		$condidat = DB::table('condidats')->where('id',$id)->first();
 		$departements = DB::table('departements')->get();
 		$document = 0;
@@ -32,6 +35,9 @@ class StagiaireController extends Controller
 
 
 	public function getAttachement($id,$type) {
+		ifAuth::User()->type ==3) {
+         return redirect()->back()->with('danger','vous n\'avez pas le droit d\'access');
+     	}
 		$document = DB::table('condidats')->where('id',$id)->value('documents');
 		$document = json_decode($document);
 	  	if($type == 'assurence') {
@@ -50,6 +56,9 @@ class StagiaireController extends Controller
 	}
 
 	public function postNew($id , Request $request) {
+		ifAuth::User()->type ==3) {
+         return redirect()->back()->with('danger','vous n\'avez pas le droit d\'access');
+     	}
 		DB::beginTransaction();
         try {
             $this->validate($request, [
@@ -163,19 +172,22 @@ class StagiaireController extends Controller
 	}
 
 	public function theList() {
-        $list = DB::table('condidats as c')
-            ->join('departements as d','d.id','=','c.departement')
-            ->join('stages as st','st.stagiaire','=','c.user')
-            ->join('users as resp','resp.id','=','st.responsable','left outer')
-            ->join('sujets as sj','sj.id','=','st.sujet','left outer')
-            ->select('c.id','c.nom','c.prenom','c.email','c.etablissement','c.datefrom','c.dateend','c.etat',
-            	'd.nom as departement',
-            	'resp.nom as resp_nom','resp.prenom as resp_prenom',
-            	'sj.id as sujet','sj.objet'
-            	)
-            ->where('c.etat',1)
-            ->get();
-        return View::make('contents.stagiaire.list' , ['stagiaires' => $list]);
+		ifAuth::User()->type ==3) {
+         return redirect()->back()->with('danger','vous n\'avez pas le droit d\'access');
+     	}
+     	$list = DB::table('condidats as c')
+         ->join('departements as d','d.id','=','c.departement')
+         ->join('stages as st','st.stagiaire','=','c.user')
+         ->join('users as resp','resp.id','=','st.responsable','left outer')
+         ->join('sujets as sj','sj.id','=','st.sujet','left outer')
+         ->select('c.id','c.nom','c.prenom','c.email','c.etablissement','c.datefrom','c.dateend','c.etat',
+         	'd.nom as departement',
+         	'resp.nom as resp_nom','resp.prenom as resp_prenom',
+         	'sj.id as sujet','sj.objet'
+         	)
+         ->where('c.etat',1)
+         ->get();
+     	return View::make('contents.stagiaire.list' , ['stagiaires' => $list]);
     }
 
 	//ajax functions :
@@ -187,7 +199,10 @@ class StagiaireController extends Controller
 	     * @return \Illuminate\Http\Response
 	     */
 		public function ajaxDeptsRespAndSujets($id) {
-
+			ifAuth::User()->type ==3) {
+				return Response::json(['code'=>400 , 'msgError'=>'danger','vous n\'avez pas le droit d\'access']);
+     		}	
+     		
 			$resps = DB::table('users')
 				->select('id','nom','prenom')
 				->where('departement',$id)
@@ -202,6 +217,6 @@ class StagiaireController extends Controller
 				->where('s.etat','<',3) //in pending statut
 				->get();
 
-			return Response::json(['responsables' => $resps , 'sujets' => $sujets]);
+			return Response::json(['code' => 200 , 'responsables' => $resps , 'sujets' => $sujets]);
 		}
 }

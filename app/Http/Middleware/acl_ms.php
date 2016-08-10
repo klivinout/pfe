@@ -16,8 +16,9 @@ class acl_ms
     public function handle($request, Closure $next)
     {
         //access controle for "maitre de stage"
-        if(Auth::User()->type != 1)
-            return redirect()->back()->with('danger','Vous n\'avez pas le droit d\'access !!');
-        return $next($request);
+        if(Auth::User()->type != 2)
+            return $next($request);
+        else
+            return redirect()->route('logout')->with('info','tralala');
     }
 }

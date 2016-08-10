@@ -1,6 +1,8 @@
 @include('template.header')
 @include('template.menu')
-
+<?php
+$privilege = Auth::User()->type;
+?>
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -62,6 +64,7 @@
                                         @elseif($s->etat == 3)
                                             <label class="label label-success">réaliser</label>
                                         @endif
+                                        @if($privilege==2 || $privilege==10)
                                         <div class="input-group input-group-xs">
                                             <div class="input-group-btn">
                                                 <button type="button" class="btn btn-xs dropdown-toggle" data-toggle="dropdown"><span class="fa fa-caret-down"></span></button>
@@ -73,12 +76,12 @@
                                                     </li>
                                                     <li>
                                                         <a href="{{route('modifysujetetat' , ['id'=>$s->id , 'etat' => 1])}}">
-                                                            encours
+                                                            en cours
                                                         </a>
                                                     </li>
                                                     <li>
                                                         <a href="{{route('modifysujetetat' , ['id'=>$s->id , 'etat' => 2])}}">
-                                                            àconfirmer
+                                                            à confirmer
                                                         </a>
                                                     </li>
                                                     <li>
@@ -89,11 +92,14 @@
                                                 </ul>
                                             </div><!-- /btn-group -->
                                         </div>
+                                        @endif
                                     </td>
                                     <td class="col-sm-1">
+                                        @if($s->proposer_par == Auth::User()->id)
                                         <a class="btn btn-info btn-flat btn-xs" href="{{route('modifysujet' , ['id'=>$s->id])}}">
                                             Modifier
                                         </a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

@@ -1,4 +1,5 @@
 <?php
+$privilege = Auth::User()->type;
 function active($route) {
   if(is_array($route)) {
     foreach ($route as $r) {
@@ -17,7 +18,7 @@ function activeGroup($group) {
     <section class="sidebar">
       <ul class="sidebar-menu">
         <li class="header">MENU DE NAVIGATION</li>
-        
+        @if($privilege != 3) <!-- restrected for the trainer -->
         <li class="treeview{{activeGroup('condidat')}}">
           <a href="#">
             <span>Condidats</span>
@@ -26,11 +27,13 @@ function activeGroup($group) {
             </span>
           </a>
           <ul class="treeview-menu">
+            @if($privilege == 1 || $privilege == 10)
             <li class="{{active('newcondidat')}}"><a href="{{route('newcondidat')}}"><i class="fa fa-user-plus"></i></i> Nouveau condidat </a></li>
+            @endif
             <li class="{{active('listcondidate')}}"><a href="{{route('listcondidate')}}"><i class="fa fa-list"></i> Liste </a></li>
           </ul>
         </li>
-
+        @endif
         <li class="treeview{{activeGroup('sujet')}}">
           <a href="#">
             <span>Sujet</span>
@@ -39,11 +42,13 @@ function activeGroup($group) {
             </span>
           </a>
           <ul class="treeview-menu">
+            @if($privilege != 3)
             <li class="{{active('newsujet')}}"><a href="{{route('newsujet')}}"><i class="fa fa-user-plus"></i></i> Nouveau Sujet </a></li>
+            @endif
             <li class="{{active('listsujet')}}"><a href="{{route('listsujet')}}"><i class="fa fa-list"></i> Liste des sujets </a></li>
           </ul>
         </li>
-
+        @if($privilege != 3)
         <li class="treeview{{activeGroup('stagiaire')}}">
           <a href="#">
             <span>Stagiaire</span>
@@ -55,7 +60,8 @@ function activeGroup($group) {
             <li class="{{active('liststagiaires')}}"><a href="{{route('liststagiaires')}}"><i class="fa fa-list"></i> Liste des Stagiaires </a></li>
           </ul>
         </li>
-
+        @endif
+        @if($privilege==3  || $privilege==2 || $privilege==10)
         <li class="treeview{{activeGroup('tache')}}">
           <a href="#">
             <span>Stages et Taches</span>
@@ -70,20 +76,29 @@ function activeGroup($group) {
             <li class="{{active('listtache')}}"><a href="{{route('listtache')}}"><i class="fa fa-list"></i> Stages et taches </a></li>
           </ul>
         </li>
-
-        <li class="treeview">
+        @endif
+        @if($privilege == 10)
+        <li class="treeview{{activeGroup('responsable')}}">
           <a href="#">
-            <i class="fa fa-circle-o text-yellow"></i> <span>Warning</span>
+            <span>Responsables et Departements</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
           </a>
+          <ul class="treeview-menu">
+            <li class="{{active('newresponsable')}}"><a href="{{route('newresponsable')}}"><i class="fa fa-list"></i> Nouveau Responsable</a></li>
+          </ul>
+          <ul class="treeview-menu">
+            <li class="{{active('listtache')}}"><a href="{{route('listresponsable',['departement'=>'tout'])}}"><i class="fa fa-list"></i> Liste des responsables </a></li>
+          </ul>
+          <ul class="treeview-menu">
+            <li class="{{active('newdepartement')}}"><a href="{{route('newdepartement')}}"><i class="fa fa-list"></i> Nouvelle Departement</a></li>
+          </ul>
+          <ul class="treeview-menu">
+            <li class="{{active('listdepartement')}}"><a href="{{route('listdepartement')}}"><i class="fa fa-list"></i> Liste des Departements </a></li>
+          </ul>
         </li>
-        <li class="header">&nbsp</li>
-        <li class="header">&nbsp</li>
-        <li class="header">TRUCS</li>
-        <li class="treeview">
-          <a href="#">
-            <i class="fa fa-circle-o text-aqua"></i> <span>Information</span>
-          </a>
-        </li>
+        @endif
       </ul>
     </section>
     <!-- /.sidebar -->

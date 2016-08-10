@@ -3,8 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Auth;
 
-class acl_stg
+class TachesACL
 {
     /**
      * Handle an incoming request.
@@ -15,9 +16,9 @@ class acl_stg
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::User()->type != 3)
-            return $next($request);
-        else
-            return redirect()->route('logout')->with('info','tralala');
+        if(Auth::User()->type ==3) {
+            return redirect()->back()->with('danger','vous n\'avez pas le droit d\'access');
+        }
+        return $next($request);
     }
 }

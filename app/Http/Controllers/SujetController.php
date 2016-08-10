@@ -17,10 +17,16 @@ use Auth;
 class SujetController extends Controller
 {
     public function getNew() {
+        if(Auth::User()->type ==3) {
+            return redirect()->back()->with('danger','vous n\'avez pas le droit d\'access');
+        }
         return view('contents.sujet.new');
     }
 
     public function postNew(Request $request) {
+        if(Auth::User()->type ==3) {
+            return redirect()->back()->with('danger','vous n\'avez pas le droit d\'access');
+        }
         DB::beginTransaction();
         try {
             $this->validate($request , [
@@ -62,7 +68,6 @@ class SujetController extends Controller
 
     public function getModify($id) {
         $data = DB::table('sujets')->where('id',$id)->first();  
-
         return View::make('contents.sujet.modify' , ['sujet' => $data]);
     }
 
@@ -74,6 +79,9 @@ class SujetController extends Controller
     }
 
     public function postModify($id) {
+        if(Auth::User()->type ==3) {
+            return redirect()->back()->with('danger','vous n\'avez pas le droit d\'access');
+        }
         DB::beginTransaction();
         try {
             $this->validate($request , [
@@ -124,6 +132,9 @@ class SujetController extends Controller
     }
 
     public function modifyEtat($id,$etat) {
+        if(Auth::User()->type ==3) {
+            return redirect()->back()->with('danger','vous n\'avez pas le droit d\'access');
+        }
         if($etat > 3 || $etat < 0) {
             return redirect()->back()->with('danger','indice de statut non valide');
         } else {

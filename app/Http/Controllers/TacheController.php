@@ -16,8 +16,17 @@ use Input;
 class TacheController extends Controller
 {
     public function getNew($id,$tache){
+
         if($id != 'tout') {
             $stage = DB::table('stages')->where('id',$id)->first();
+            $user = Auth::User();
+            if($user->type == 2) {
+                if($user->id != $stage->responsable && $user->type != 10)
+                    return redirect()->back()->with('info','Vous n\'avez pas le droit d\'access !!')
+            } else if($user->type==3){
+                if($user->id != $stage->stagiaire && $user->type != 10)
+                    return redirect()->back()->with('info','Vous n\'avez pas le droit d\'access !!')
+            }
             $stagiaire = DB::table('condidats as c')
                 ->join('departements as d','d.id','=','c.departement')
                 ->select('c.*','d.id as dep_id','d.nom as dep_nom')
@@ -67,6 +76,7 @@ class TacheController extends Controller
     }
 
     public function postNew($id,$tache,Request $request) {
+
         if($tache == 'tout') {
             DB::beginTransaction();
             try {
@@ -121,6 +131,7 @@ class TacheController extends Controller
     }
 
     public function theList() {
+
         $stages = DB::table('stages as s')
             ->join('condidats as stg','stg.user','=','s.stagiaire')
             ->join('users as resp','resp.id','=','s.responsable')
@@ -132,6 +143,14 @@ class TacheController extends Controller
                 'dep.nom as dep_nom',
                 'sujets.id as sujet','sujets.objet as sujet_objet'
                 )
+            ->where(function ($query) {
+                if(Auth::User()->type == 2) {
+                    $query->where('s.responsable',Auth::User()->id)
+                } else if(Auth::User()->type == 3) {
+                    $query->where('s.stagiaire',Auth::User()->id)
+                }
+            })
+            ->where('s.responsable',Auth::User()->id)
             ->orderBy('s.id')
             ->get();
         return View::make('contents.tache.list' , ['stages' => $stages]);
@@ -148,12 +167,32 @@ class TacheController extends Controller
          */
             public function theListByStage($id) {
 
+                $stage = DB::table('stages')->where('id',$id)->first();
+                $user = Auth::User();
+                if($user->type == 2) {
+                    if($user->id != $stage->responsable && $user->type != 10)
+                        return Response::json([
+                            'code' => 400 ,
+                            'taches' => $taches,
+                            'msgError' => 'Vous n\'avez pas le droit de consulter les taches de ce Stage !!']);
+                } else if($user->type==3){
+                    if($user->id != $stage->stagiaire && $user->type != 10)
+                        return Response::json([
+                            'code' => 400 ,
+                            'taches' => $taches,
+                            'msgError' => 'Vous n\'avez pas le droit de consulter les taches de ce Stage !!']);
+                }
+
                 $taches = DB::table('taches')->where('stage',$id)->get();
 
                 if(!empty($taches))
                     return Response::json(['code' => 200 ,'taches' => $taches]);
                 else 
-                    return Response::json(['code' => 501 ,'taches' => $taches]);
+                    return Response::json([
+                        'code' => 501 ,
+                        'taches' => $taches,
+                        'msgError' => 'Ce stage n\'a encore aucune tache'
+                        ]);
 
             }
 

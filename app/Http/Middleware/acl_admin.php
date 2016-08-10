@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Auth;
 
 class acl_admin
 {
@@ -15,6 +16,9 @@ class acl_admin
      */
     public function handle($request, Closure $next)
     {
-        return $next($request);
+        if(Auth::User()->type == 10)
+            return $next($request);
+        else
+            return redirect()->route('logout')->with('info','tralala');
     }
 }

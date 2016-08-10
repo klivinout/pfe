@@ -1,6 +1,8 @@
 @include('template.header')
 @include('template.menu')
-
+<?php
+$privilege = Auth::User()->type;
+?>
 
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -63,22 +65,28 @@
                                                 
                                                 <ul class="dropdown-menu dropdown-menu-right">
                                                     @if($c->etat == null || $c->etat == 0)
-                                                    <li>
-                                                        <a href="{{route('modifycondidat' , ['id'=>$c->id])}}">
-                                                            Consulter ou modifier Condidat
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{route('newstagiaire' , ['id' => $c->id])}}">
-                                                            Confirmer en Stragiaire
-                                                        </a>
-                                                    </li>
+                                                        @if($privilege==1)
+                                                        <li>
+                                                            <a href="{{route('modifycondidat' , ['id'=>$c->id])}}">
+                                                                Consulter ou modifier Condidat
+                                                            </a>
+                                                        </li>
+                                                        @endif
+                                                        @if(($c->departement == Auth::User()->departement && $privilege==2) || $privilege==10)
+                                                        <li>
+                                                            <a href="{{route('newstagiaire' , ['id' => $c->id])}}">
+                                                                Confirmer en Stragiaire
+                                                            </a>
+                                                        </li>
+                                                        @endif
                                                     @else
-                                                    <li>
-                                                        <a href="{{route('newstagiaire' , ['id'=>$c->id])}}">
-                                                            Consulter ou modifier Stagiaire
-                                                        </a>
-                                                    </li>
+                                                        @if(($c->departement == Auth::User()->departement && $privilege!=3) || $privilege==10)
+                                                        <li>
+                                                            <a href="{{route('newstagiaire' , ['id'=>$c->id])}}">
+                                                                Consulter ou modifier Stagiaire
+                                                            </a>
+                                                        </li>
+                                                        @endif
                                                     @endif
                                                 </ul>
                                             </div><!-- /btn-group -->

@@ -162,6 +162,12 @@
                     ');  
                 });
 
+            } else if(rep.code == 400) {
+                swal("Attention!", rep.msgError , "error");
+            } else if(rep.code == 501) {
+                swal("Erreur!", rep.msgError, "error");
+            }else {
+                swal("Erreur!", "Une erreur inconnu est survenu, Veuillez contacter votre administrateur", "error");
             }
         });
 

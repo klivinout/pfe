@@ -1,6 +1,8 @@
 @include('template.header')
 @include('template.menu')
-
+<?php
+$privilege = Auth::User()->type;
+?>
 
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -58,11 +60,13 @@
 
                     <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
                 </div>
+                @if($privilege!=3)
                 <div class="box-footer clearfix">
                     <button type="submit" class="pull-right btn btn-default btn-flat" id="sendEmail">Enoyer
                         <i class="fa fa-arrow-circle-right"></i>
                     </button>
                 </div>
+                @endif
             </form>
         </div>
     </section>

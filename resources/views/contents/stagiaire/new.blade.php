@@ -173,22 +173,28 @@
         url = url.replace(':id',dept);
 
         $.get(url , function (rep) {
-            $('#responsable').append('<option value="0"></option>');
-            $.each(rep.responsables, function(i , responsable) {
-                $('#responsable').append('\
-                    <option value="' +responsable.id+ '">\
-                        ' +responsable.nom+ ' ' +responsable.prenom+ '\
-                    </option>\
-                ');
-            });
-            $('#sujet').append('<option value="0"></option>');
-            $.each(rep.sujets, function(i , sujet) {
-                $('#sujet').append('\
-                    <option value="' +sujet.id+ '">\
-                        ' +sujet.objet+ '\
-                    </option>\
-                ');
-            });
+            if(rep.code == 200) {
+                $('#responsable').append('<option value="0"></option>');
+                $.each(rep.responsables, function(i , responsable) {
+                    $('#responsable').append('\
+                        <option value="' +responsable.id+ '">\
+                            ' +responsable.nom+ ' ' +responsable.prenom+ '\
+                        </option>\
+                    ');
+                });
+                $('#sujet').append('<option value="0"></option>');
+                $.each(rep.sujets, function(i , sujet) {
+                    $('#sujet').append('\
+                        <option value="' +sujet.id+ '">\
+                            ' +sujet.objet+ '\
+                        </option>\
+                    ');
+                });
+            } else if (rep.code == 400) {
+                swal('Erreur' , rep.msgError , 'error');
+            } else {
+                swal('Erreur' , 'une erreur est survenue !!' , 'error');
+            }
         });
     }
 </script>

@@ -31,6 +31,11 @@ Route::group(['middleware' => 'auth','prefix' => 'admin'] , function () {
 		'as' => 'adminindex'
 	]);
 
+	Route::get('/logout' , [
+		'uses' => 'AdminController@getLogout',
+		'as' => 'logout'
+	]);
+
 	Route::group(['prefix' => 'condidat'] , function () {
 		Route::get('/' , [
 			'uses' => 'CondidatController@getNew',
@@ -113,7 +118,7 @@ Route::group(['middleware' => 'auth','prefix' => 'admin'] , function () {
 		]);
 	});
 
-	Route::group(['prefix' => 'tache'] , function () {
+	Route::group(['prefix' => 'tache','middleware' => 'TachesACL'] , function () {
 		Route::get('/stage/{id}/{tache}' , [
 			'uses' => 'TacheController@getNew',
 			'as' => 'newtache'
@@ -152,6 +157,48 @@ Route::group(['middleware' => 'auth','prefix' => 'admin'] , function () {
 					'as' => 'ajaxmodifiertachestatut'
 				]);
 			});
+		});
+	});
+
+	Route::group(['prefix' => 'responsable'] , function () {
+		Route::get('/',[
+			'uses' => 'ResponsableController@getNew',
+			'as' => 'newresponsable'
+		]);
+		Route::post('/',[
+			'uses' => 'ResponsableController@postNew'
+		]);
+		Route::get('modifier/{id}',[
+			'uses' => 'ResponsableController@getModify',
+			'as' => 'modifyresponsable'
+		]);
+		Route::post('modifier/{id}',[
+			'uses' => 'ResponsableController@postModify'
+		]);
+		Route::get('liste/{departement}',[
+			'uses' => 'ResponsableController@theList',
+			'as' => 'listresponsable'
+		]);
+
+		Route::group(['prefix' => 'dept'] , function () {
+			Route::get('/',[
+				'uses' => 'ResponsableController@getNewDept',
+				'as' => 'newdepartement'
+			]);
+			Route::post('/',[
+				'uses' => 'ResponsableController@postNewDept'
+			]);
+			Route::get('modifier/{id}',[
+				'uses' => 'ResponsableController@getModifyDept',
+				'as' => 'modifydepartement'
+			]);
+			Route::post('modifier/{id}',[
+				'uses' => 'ResponsableController@postModifyDept'
+			]);
+			Route::get('liste',[
+				'uses' => 'ResponsableController@theListDept',
+				'as' => 'listdepartement'
+			]);
 		});
 	});
 
