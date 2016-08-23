@@ -13,7 +13,8 @@ use Response;
 use Auth;
 use Input;
 
-use HTML2PDF;
+use SnappyImage;
+use PDF;
 
 class TacheController extends Controller
 {
@@ -180,7 +181,9 @@ class TacheController extends Controller
             ->where('c.id',$stage->stagiaire)
             ->select('c.*','d.nom as dept_nom')
             ->first();
-
+        $pdf = PDF::loadView('pdf.attestation_ms', ['stagiaire' => $stagiaire]);
+        return $pdf->download('attestation_ms.pdf');
+        /*
         ob_start();
         include("trame/dept.blade.php");
         $content = ob_get_clean();
@@ -196,6 +199,7 @@ class TacheController extends Controller
             echo $e;
             return;
         }
+        */
     }
 
     //ajax functions :

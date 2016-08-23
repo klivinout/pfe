@@ -14,6 +14,14 @@ class AuthController extends Controller
 {
     public function getLogin() {
 
+        /*DB::table('users')->insert([
+            'email' => 'admin@admin.com',
+            'password' => bcrypt('12345'),
+            'nom' => 'Benbakh',
+            'prenom' => 'Med Salah',
+            'departement' => 1
+        ]);*/
+
         if (Auth::viaRemember()) {
             return redirect()->route('acceuil');
         } else {
