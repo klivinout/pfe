@@ -13,6 +13,8 @@ use Response;
 use Auth;
 use Input;
 
+use HTML2PDF;
+
 class TacheController extends Controller
 {
     public function getNew($id,$tache){
@@ -22,10 +24,10 @@ class TacheController extends Controller
             $user = Auth::User();
             if($user->type == 2) {
                 if($user->id != $stage->responsable && $user->type != 10)
-                    return redirect()->back()->with('info','Vous n\'avez pas le droit d\'access !!')
+                    return redirect()->back()->with('info','Vous n\'avez pas le droit d\'access !!');
             } else if($user->type==3){
                 if($user->id != $stage->stagiaire && $user->type != 10)
-                    return redirect()->back()->with('info','Vous n\'avez pas le droit d\'access !!')
+                    return redirect()->back()->with('info','Vous n\'avez pas le droit d\'access !!');
             }
             $stagiaire = DB::table('condidats as c')
                 ->join('departements as d','d.id','=','c.departement')
@@ -70,6 +72,8 @@ class TacheController extends Controller
             $stages = DB::table('stages as s')
                 ->join('condidats as stg','stg.user','=','s.stagiaire')
                 ->select('s.id as stage','stg.nom','stg.prenom','stg.datefrom')
+                ->where('s.responsable',Auth::User()->id)
+                ->where('s.statut',0)
                 ->get();
             return View::make('contents.tache.new' , ['stages' => $stages]);
         }
@@ -94,6 +98,19 @@ class TacheController extends Controller
                     'created_at' => Date('Y-m-d H:i:s')
                 ];
                 $condidat = DB::table('taches')->insertGetId($insertTask);
+
+                //NOTIFICATION 50
+                $notif_stagiaire = DB::table('stages')->where('id',$id)->first();
+                $insertNotification = [
+                    'broadcast' => 0,
+                    'from' => Auth::User()->id,
+                    'to' => $notif_stagiaire->stagiaire,
+                    'type' => 50,
+                    'date_add' => Date('Y-m-d H:i:s'),
+                    'lien' => route('newtache',['id'=>$id,'tache'=>$tache]),
+                    'created_at' => Date('Y-m-d H:i:s')
+                ];
+                DB::table('notifications')->insert($insertNotification);
 
             } catch (Exception $e) {
                 DB::rollback();
@@ -145,9 +162,9 @@ class TacheController extends Controller
                 )
             ->where(function ($query) {
                 if(Auth::User()->type == 2) {
-                    $query->where('s.responsable',Auth::User()->id)
+                    $query->where('s.responsable',Auth::User()->id);
                 } else if(Auth::User()->type == 3) {
-                    $query->where('s.stagiaire',Auth::User()->id)
+                    $query->where('s.stagiaire',Auth::User()->id);
                 }
             })
             ->where('s.responsable',Auth::User()->id)
@@ -156,6 +173,30 @@ class TacheController extends Controller
         return View::make('contents.tache.list' , ['stages' => $stages]);
     }
 
+    public function imprimer($id) {
+        $stage = DB::table('stages')->where('id',$id)->first();
+        $stagiaire = DB::table('condidats as c')
+            ->join('departements as d','d.id','=','c.departement')
+            ->where('c.id',$stage->stagiaire)
+            ->select('c.*','d.nom as dept_nom')
+            ->first();
+
+        ob_start();
+        include("trame/dept.blade.php");
+        $content = ob_get_clean();
+        try
+        {
+            $html2pdf = new HTML2PDF('P', 'A4', 'fr');
+
+            $html2pdf->writeHTML($content, isset($_GET['vuehtml']));
+            $path = 'server/certificats/'.$stage->stagiaire;
+            $html2pdf->Output(asset($path).$id.'.pdf','f');
+        }
+        catch(HTML2PDF_exception $e) {
+            echo $e;
+            return;
+        }
+    }
 
     //ajax functions :
 
@@ -187,7 +228,7 @@ class TacheController extends Controller
 
                 if(!empty($taches))
                     return Response::json(['code' => 200 ,'taches' => $taches]);
-                else 
+                else
                     return Response::json([
                         'code' => 501 ,
                         'taches' => $taches,
@@ -196,18 +237,23 @@ class TacheController extends Controller
 
             }
 
-        /**getModify
-         * returns array/obj of task's info
-         *
-         * @param  id of Tache  $id
-         * @return \Illuminate\Http\Response
-         */
-            public function getModify($id) {
-                $tache = DB::table('taches')->where('id',$id)->first();
-                if(empty($tache))
-                    return redirect()->route('newtache',['id'=>$id,'tache'=>'tout'])->with('danger','aucune tache corespondante');
-                return Response::json(['code'=>200,'tache'=>$tache]);
-            }
+  /**getModify
+   * returns array/obj of task's info
+   *
+   * @param  id of Tache  $id
+   * @return \Illuminate\Http\Response
+   */
+      public function getModify($id) {
+        try{
+          $tache = DB::table('taches')->where('id',$id)->first();
+          if(empty($tache))
+              return Response::json(['code'=>401,'tache'=> [] ]);
+          return Response::json(['code'=>200,'tache'=>$tache]);
+        }catch(Exception $e){
+            return Response::json(['code'=>501,'message' => $e->getMessage()]);
+        }
+
+      }
 
         /**postStatut
          * returns result of request of task's modifying statut
@@ -216,15 +262,55 @@ class TacheController extends Controller
          * @return \Illuminate\Http\Response
          */
             public function postStatut($id) {
-                $statut = Input::get('statut');
-                $statutJson = '['.$statut.','.Auth::User()->id.']';
-                $n = DB::table('taches')->where('id',$id)->update(['statut' => $statutJson]);
-                if($n == 1)
-                    return Response::json(['code' => 200,'newstatut' => $statut,'tache'=>$id]);
-                if($n == 0)
-                    return Response::json(['code' => 201,'newstatut' => $statut,'tache'=>$id]);
-                else
-                    return Response::json(['code' => 501]);
+                try{
+                    DB::beginTransaction();
+                    $statut = Input::get('statut');
+                    $statutJson = '['.$statut.','.Auth::User()->id.']';
+                    $n = DB::table('taches')->where('id',$id)->update(['statut' => $statutJson]);
+                    if($n == 1){
+                        //NOTIFICATION 5*
+                        $notif_statut = 50;
+                        switch ($statut) {
+                            case 10:
+                                $notif_statut = 51;
+                                break;
+                            case 1:
+                                $notif_statut = 53;
+                                break;
+                            case -1:
+                                $notif_statut = 52;
+                                break;
+                        }
+                        $stage = DB::table('taches')->where('id',$id)->first();
+                        $notif_stagiaire = DB::table('stages')->where('id',$stage->stage)->first();
+
+                        if($notif_statut != 53)
+                            $notif_to = $notif_stagiaire->stagiaire;
+                        else
+                            $notif_to = $notif_stagiaire->responsable;
+                        $insertNotification = [
+                            'broadcast' => 0,
+                            'from' => Auth::User()->id,
+                            'to' => $notif_to,
+                            'type' => $notif_statut,
+                            'date_add' => Date('Y-m-d H:i:s'),
+                            'lien' => route('newtache',['id'=>$stage->stage,'tache'=>$id]),
+                            'created_at' => Date('Y-m-d H:i:s')
+                        ];
+                        DB::table('notifications')->insert($insertNotification);
+                        DB::commit();
+                        return Response::json(['code' => 200,'newstatut' => $statut,'tache'=>$id]);
+                    }
+                    if($n == 0){
+                        return Response::json(['code' => 201,'newstatut' => $statut,'tache'=>$id]);
+                    }
+                    else{
+                        return Response::json(['code' => 501]);
+                    }
+                }catch(Exception $e){
+                    DB::rollback();
+                    return $e->getMessage();
+                }
             }
 
         /**postStatut

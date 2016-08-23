@@ -6,19 +6,6 @@ $privilege = Auth::User()->type;
 
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <h1>
-            Dashboard <small>Control panel</small>
-        </h1>
-        <ol class="breadcrumb">
-            <li>
-                <a href="#"><i class="fa fa-dashboard"></i> Home</a>
-            </li>
-            <li class="active">
-                Dashboard
-            </li>
-        </ol>
-    </section>
 
     <!-- Main content -->
     <section class="content">
@@ -65,13 +52,11 @@ $privilege = Auth::User()->type;
                                                 
                                                 <ul class="dropdown-menu dropdown-menu-right">
                                                     @if($c->etat == null || $c->etat == 0)
-                                                        @if($privilege==1)
                                                         <li>
                                                             <a href="{{route('modifycondidat' , ['id'=>$c->id])}}">
                                                                 Consulter ou modifier Condidat
                                                             </a>
                                                         </li>
-                                                        @endif
                                                         @if(($c->departement == Auth::User()->departement && $privilege==2) || $privilege==10)
                                                         <li>
                                                             <a href="{{route('newstagiaire' , ['id' => $c->id])}}">

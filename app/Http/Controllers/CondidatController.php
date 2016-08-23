@@ -35,7 +35,7 @@ class CondidatController extends Controller
                 'etablissement' => 'required',
                 'datefrom' => 'required | date',
                 'dateend' => 'required | date',
-                'division' => '',
+                'division' => 'required',
                 'observation' => '',
             ]);
             $insertCondidat = [
@@ -50,6 +50,16 @@ class CondidatController extends Controller
                 'created_at' => Date('Y-m-d H:i:s')
             ];
             $condidat = DB::table('condidats')->insertGetId($insertCondidat);
+            $insertNotification = [
+                'broadcast' => 1,
+                'from' => Auth::User()->id,
+                'to' => $request->input('division'),
+                'type' => 10,
+                'date_add' => Date('Y-m-d H:i:s'),
+                'lien' => route('modifycondidat',['id'=>$condidat]),
+                'created_at' => Date('Y-m-d H:i:s')
+            ];
+            DB::table('notifications')->insert($insertNotification);
         } catch (Exception $e) {
             DB::rollback();
             dd($e);
@@ -59,7 +69,7 @@ class CondidatController extends Controller
     }
 
     public function getModify($id) {
-        if(Auth::User()->type != 10 && Auth::User()->type !=1) {
+        if(Auth::User()->type ==3) {
             return redirect()->back()->with('danger','vous n\'avez pas le droit d\'access');
         }
         $departements = DB::table('departements')->get();
@@ -80,7 +90,7 @@ class CondidatController extends Controller
                 'etablissement' => 'required',
                 'datefrom' => 'required | date',
                 'dateend' => 'required | date',
-                'division' => '',
+                'division' => 'required',
                 'observation' => '',
             ]);
             $modifyCondidat = [
@@ -95,6 +105,16 @@ class CondidatController extends Controller
                 'updated_at' => Date('Y-m-d H:i:s')
             ];
             DB::table('condidats')->where('id',$id)->update($modifyCondidat);
+            $insertNotification = [
+                'broadcast' => 1,
+                'from' => Auth::User()->id,
+                'to' => $request->input('division'),
+                'type' => 12,
+                'date_add' => Date('Y-m-d H:i:s'),
+                'lien' => route('modifycondidat',['id'=>$id]),
+                'created_at' => Date('Y-m-d H:i:s')
+            ];
+            DB::table('notifications')->insert($insertNotification);
         } catch (Exception $e) {
             DB::rollback();
             dd($e);

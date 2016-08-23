@@ -31,6 +31,21 @@ class AuthController extends Controller
         if(!Auth::attempt($request->only(['email','password']),$request->has('remember'))) {
             return redirect()->back()->with('info' , 'Vos informations sont incorrect');
         } else {
+            $user = Auth::User();
+            switch ($user->type) {
+                case 1:
+                    return redirect()->route('listcondidate');
+                    break;
+                case 2:
+                    return redirect()->route('liststagiaires');
+                    break;
+                case 3:
+                    return redirect()->route('listtache');
+                    break;
+                case 10:
+                    return redirect()->route('listcondidate');
+                    break;
+            }
             return redirect()->route('adminindex');
         }
     }

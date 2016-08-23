@@ -1,3 +1,23 @@
+<?php
+
+$notifs_user = DB::table('notifications as n')
+  ->join('notifs_msg as m','m.code','=','n.type')
+  ->where('n.to',Auth::User()->id)
+  ->where('n.broadcast',0)
+  ->whereNull('n.date_seen')
+  ->take(20)
+  ->get();
+$notifs_dep = DB::table('notifications as n')
+  ->join('notifs_msg as m','m.code','=','n.type')
+  ->where('to',Auth::User()->departement)
+  ->where('broadcast',1)
+  ->whereNull('date_seen')
+  ->take(20)
+  ->get();
+
+$total_notif = count($notifs_dep)+count($notifs_user);
+
+?>
 <!DOCTYPE html>
 <html>
 
@@ -5,7 +25,7 @@
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <title>Wilaya de Marrakech-Safi | Gestion de stages </title>
+  <title> Wilaya de Marrakech-Safi | Gestion de stages </title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
@@ -56,51 +76,17 @@
       <!-- Navbar Right Menu -->
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
-          <!-- Messages: style can be found in dropdown.less-->
-          <li class="dropdown messages-menu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <i class="fa fa-envelope-o"></i>
-              <span class="label label-success">{{"4"}}</span>
-            </a>
-            <ul class="dropdown-menu">
-              <li class="header">
-                @if(0 == 0)
-                  Vous avez {{"4"}} message
-                @else
-                  Vous n'avez pas de messages
-                @endif
-              </li>
-              <li>
-                <!-- inner menu: contains the actual data -->
-                <ul class="menu">
-                  <li><!-- start message -->
-                    <a href="#">
-                      <div class="pull-left">
-                        <img src="{{asset('assets/img/avatar.png')}}" class="img-circle" alt="User Image">
-                      </div>
-                      <h4>
-                        {{"sender"}}
-                        <small><i class="fa fa-clock-o"></i> {{"00:00"}}</small>
-                      </h4>
-                      <p>{{"objet message"}}</p>
-                    </a>
-                  </li>
-                  <!-- end message -->
-                </ul>
-              </li>
-              <li class="footer"><a href="{{'routeallmsg'}}">Voir tout les messages</a></li>
-            </ul>
-          </li>
+
           <!-- Notifications: style can be found in dropdown.less -->
           <li class="dropdown notifications-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <i class="fa fa-bell-o"></i>
-              <span class="label label-warning">{{"10"}}</span>
+              <span class="label label-warning">{{$total_notif}}</span>
             </a>
             <ul class="dropdown-menu">
               <li class="header">
-                @if(0 == 0)
-                  Vous avez {{"10"}} notifications
+                @if($total_notif>0)
+                  Vous avez {{$total_notif}} notification(s)
                 @else
                   Vous n'avez pas de notifications
                 @endif
@@ -108,29 +94,25 @@
               <li>
                 <!-- inner menu: contains the actual data -->
                 <ul class="menu">
+                @if($total_notif>0)
+                  @foreach($notifs_user as $notif_user)
                   <li>
-                    <a href="{{"linktonotification"}}">
-                      <i class="fa fa-users text-aqua"></i> {{"type of notification"}}
-                      <!--
-                        types of notifications :
-                          - taches : 
-                            - ajouter
-                            - confirmer
-                            - non aprouver
-                          - sujets :
-                            - proposer
-                            - confirmer
-                            - en cours 
-                            - realisé
-                          - stage :
-                            - documents signer
-                            - stage conclu
-                      -->
+                    <a onclick="notification({{$notif_user->id}},'{{$notif_user->lien}}')">
+                      <i class="fa fa-users text-aqua"></i> {{"$notif_user->message"}}
                     </a>
                   </li>
+                  @endforeach
+                  @foreach($notifs_dep as $notif_dep)
+                  <li>
+                    <a onclick="notification({{$notif_dep->id}})">
+                      <i class="fa fa-users text-aqua"></i> {{"$notif_dep->message"}}
+                    </a>
+                  </li>
+                  @endforeach
+                @endif
                 </ul>
               </li>
-              <li class="footer"><a href="{{"routeallnotifs"}}">Voir tout les notifications</a></li>
+              <li class="footer"><a href="{{"routeallnotifs"}}"></a></li>
             </ul>
           </li>
           <!-- User Account: style can be found in dropdown.less -->
@@ -149,11 +131,8 @@
                 </p>
               </li>
               <li class="user-footer">
-                <div class="pull-left">
-                  <a href="#" class="btn btn-default btn-flat">Profile</a>
-                </div>
                 <div class="pull-right">
-                  <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                  <a href="{{route('logout')}}" class="btn btn-default btn-flat">Sign out</a>
                 </div>
               </li>
             </ul>
@@ -163,3 +142,16 @@
 
     </nav>
   </header>
+  <script type="text/javascript">
+    function notification(id) {
+      var url = "{{route('seennotification',['id'=>':id'])}}";
+      url = url.replace(':id',id);
+      $.post(url,function (rep) {
+        if(rep.code == 200) {
+          window.location = rep.notif.lien;
+        } else {
+          swal('Erreur Inconnue est survenu !!');
+        }
+      });
+    }
+  </script>
