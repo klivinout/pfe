@@ -59,19 +59,6 @@ class CreateTables extends Migration
             //$table->foreign('stagiaire')->references('id')->on('users');
         });
 
-        //create table "messages"
-        Schema::create('messages', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('from');
-            $table->integer('to');
-            $table->string('objet');
-            $table->longText('message');
-            $table->timestamps();
-
-            //$table->foreign('from')->references('id')->on('users');
-            //$table->foreign('to')->references('id')->on('users');
-        });
-
     }
 
     /**

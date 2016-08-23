@@ -10,10 +10,11 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-
+/*
 Route::get('/', function () {
 	return view('welcome');
 });
+*/
 
 Route::get('/auth/login' , [
 	'uses' => 'AuthController@getLogin',
@@ -34,6 +35,11 @@ Route::group(['middleware' => 'auth','prefix' => 'admin'] , function () {
 	Route::get('/logout' , [
 		'uses' => 'AdminController@getLogout',
 		'as' => 'logout'
+	]);
+
+	Route::post('/notification/{id}',[
+		'uses' => 'AdminController@seeNotification',
+		'as' => 'seennotification'
 	]);
 
 	Route::group(['prefix' => 'condidat'] , function () {
@@ -126,11 +132,17 @@ Route::group(['middleware' => 'auth','prefix' => 'admin'] , function () {
 		Route::post('/stage/{id}/{tache}' , [
 			'uses' => 'TacheController@postNew'
 		]);
+		
 
 		Route::group(['prefix' => 'liste'] , function () {
 			Route::get('/' , [
 				'uses' => 'TacheController@theList',
 				'as' => 'listtache'
+			]);
+
+			Route::get('/imprimer/stage/{id}',[
+				'uses' => 'TacheController@imprimer',
+				'as' => 'imprimercertificat'
 			]);
 
 			//ajax routes
@@ -186,7 +198,7 @@ Route::group(['middleware' => 'auth','prefix' => 'admin'] , function () {
 				'as' => 'newdepartement'
 			]);
 			Route::post('/',[
-				'uses' => 'ResponsableController@postNewDept'
+				'uses' => 'ResponsableController@postNewDept' 
 			]);
 			Route::get('modifier/{id}',[
 				'uses' => 'ResponsableController@getModifyDept',

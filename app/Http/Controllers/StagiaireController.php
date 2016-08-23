@@ -17,7 +17,7 @@ use Auth;
 class StagiaireController extends Controller
 {
 	public function index($id) {
-		ifAuth::User()->type ==3) {
+		if(Auth::User()->type ==3) {
          return redirect()->back()->with('danger','vous n\'avez pas le droit d\'access');
      	}
 		$condidat = DB::table('condidats')->where('id',$id)->first();
@@ -35,7 +35,7 @@ class StagiaireController extends Controller
 
 
 	public function getAttachement($id,$type) {
-		ifAuth::User()->type ==3) {
+		if(Auth::User()->type ==3) {
          return redirect()->back()->with('danger','vous n\'avez pas le droit d\'access');
      	}
 		$document = DB::table('condidats')->where('id',$id)->value('documents');
@@ -56,12 +56,12 @@ class StagiaireController extends Controller
 	}
 
 	public function postNew($id , Request $request) {
-		ifAuth::User()->type ==3) {
+		if(Auth::User()->type ==3) {
          return redirect()->back()->with('danger','vous n\'avez pas le droit d\'access');
      	}
 		DB::beginTransaction();
         try {
-            $this->validate($request, [
+            $this->validate($request, [ 
                 'nom' => 'required',
                 'prenom' => 'required',
                 'email' => 'required | email',
@@ -119,13 +119,26 @@ class StagiaireController extends Controller
 						'created_at' => Date('Y-m-d H:i:s')
 					]);
 					//add the stage
-					DB::table('stages')->insert([
+					$stage_id = DB::table('stages')->insertGetId([
 						'stagiaire' => $user_id,
 						'responsable' => $request->input('responsable'),
 						'sujet' => $request->input('sujet'),
 						'observation' => $request->input('observation'),
 						'created_at' => Date('Y-m-d H:i:s')
 	 				]);
+
+					//NOTIFICATION 30
+	 				$insertNotification = [
+						'broadcast' => 0,
+						'from' => Auth::User()->id,
+						'to' => $request->input('responsable'),
+						'type' => 30,
+						'date_add' => Date('Y-m-d H:i:s'),
+						'lien' => route('newtache',['id'=>$user_id , 'tache'=>'tout']),
+						'created_at' => Date('Y-m-d H:i:s')
+	            ];
+	            DB::table('notifications')->insert($insertNotification);
+
 				} else {
 					//grant access to platform
 					DB::table('users')->where('id',$user->user)->update([
@@ -158,6 +171,17 @@ class StagiaireController extends Controller
 					'user' => $user_id,
 					'updated_at' => Date('Y-m-d H:i:s')
 				]);
+				//NOTIFICATION 21
+				$insertNotification = [
+                'broadcast' => 0,
+                'from' => Auth::User()->id,
+                'to' => $request->input('responsable'),
+                'type' => 21,
+                'date_add' => Date('Y-m-d H:i:s'),
+                'lien' => route('newstagiaire',['id'=>$user_id]),
+                'created_at' => Date('Y-m-d H:i:s')
+            ];
+            DB::table('notifications')->insert($insertNotification);
 
          } catch (Exception $e) {
             DB::rollback();
@@ -172,7 +196,7 @@ class StagiaireController extends Controller
 	}
 
 	public function theList() {
-		ifAuth::User()->type ==3) {
+		if(Auth::User()->type ==3) {
          return redirect()->back()->with('danger','vous n\'avez pas le droit d\'access');
      	}
      	$list = DB::table('condidats as c')
@@ -199,7 +223,7 @@ class StagiaireController extends Controller
 	     * @return \Illuminate\Http\Response
 	     */
 		public function ajaxDeptsRespAndSujets($id) {
-			ifAuth::User()->type ==3) {
+			if(Auth::User()->type ==3) {
 				return Response::json(['code'=>400 , 'msgError'=>'danger','vous n\'avez pas le droit d\'access']);
      		}	
      		

@@ -3,19 +3,7 @@
 
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <h1>
-            Dashboard <small>Control panel</small>
-        </h1>
-        <ol class="breadcrumb">
-            <li>
-                <a href="#"><i class="fa fa-dashboard"></i>Home</a>
-            </li>
-            <li class="active">
-                Dashboard
-            </li>
-        </ol>
-    </section>
+
 
     <!-- Main content -->
     <section class="content">
@@ -32,7 +20,7 @@
                 </div>
                 <!-- /. tools -->
             </div>
-            
+
                 <div class="box-body">
                     <div class="col-md-4">
                         <!-- Widget: user widget style 1 -->
@@ -152,7 +140,7 @@
                                             <div class="timeline-footer">
                                                 Delai : {{$tache->delai}}
                                             </div>
-                                            
+
                                             <div class="timeline-footer" id="statutButtonsDiv{{$tache->id}}">
                                                 @if($statut==null || $statut==0 || $statut[0]==-1)
                                                 <button class="btn btn-primary btn-xs" id="examiner{{$tache->id}}" onclick="modifierTacheStatut({{$tache->id}},1)">
@@ -184,7 +172,7 @@
                                     </li>
                                     <!-- END timeline item -->
                                     @endforeach
-                                </ul> 
+                                </ul>
                                 @else
                                 <div class="form-group">
                                     <select class="form-control" id="stages" onchange="selectStage()">
@@ -198,7 +186,7 @@
 
                             </div>
                             <!-- /.box-body -->
-                        </div>          
+                        </div>
                     </div>
 
                     <div class="col-md-4">
@@ -249,7 +237,7 @@
 
     </section>
 </div>
-      
+
 
 
 @include('template.footer')
@@ -277,6 +265,10 @@
                 $('#description').val(rep.tache.description);
                 $('#delai').val(rep.tache.delai);
                 $('form').get(0).setAttribute('action', urlForm);
+            } else if(rep.code == 401) {
+              swal('Erreur','Aucune tache corespondante','danger');
+            } else {
+              swal('Erreur','une erreur inconnue est survenue : ' + rep.message,'danger');
             }
         });
     }
@@ -300,7 +292,6 @@
                 </button>\
                 ');
         } else if(newstatut == 1) {
-
             $('#statutButtonsDiv'+tache).empty();
             $('#statutIcon'+tache).attr('class','fa fa-thumbs-o-up bg-blue');
             $('#statutButtonsDiv'+tache).append('\

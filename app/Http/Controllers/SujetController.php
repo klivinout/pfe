@@ -56,6 +56,16 @@ class SujetController extends Controller
                 'mime' => $mime,
                 'created_at' => Date('Y-m-d H:i:s')
             ]);
+            $insertNotification = [
+                'broadcast' => 1,
+                'from' => Auth::User()->id,
+                'to' => Auth::User()->departement,
+                'type' => 40,
+                'date_add' => Date('Y-m-d H:i:s'),
+                'lien' => route('modifysujet',['id'=>$id]),
+                'created_at' => Date('Y-m-d H:i:s')
+            ];
+            DB::table('notifications')->insert($insertNotification);
         } catch (Exception $e) {
             DB::rollback();
             return redirect()->back()->with('danger','Erreur survenu : ' . $e->getMessage());

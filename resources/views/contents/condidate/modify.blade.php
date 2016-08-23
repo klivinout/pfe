@@ -4,19 +4,7 @@
 
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <h1>
-            Dashboard <small>Control panel</small>
-        </h1>
-        <ol class="breadcrumb">
-            <li>
-                <a href="#"><i class="fa fa-dashboard"></i> Home</a>
-            </li>
-            <li class="active">
-                Dashboard
-            </li>
-        </ol>
-    </section>
+    
 
     <!-- Main content -->
     <section class="content">
@@ -71,11 +59,26 @@
 
                     <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
                 </div>
+                @if(($condidat->departement == Auth::User()->departement && Auth::User()->type==2) || Auth::User()->type==10)
                 <div class="box-footer clearfix">
-                    <button type="submit" class="pull-right btn btn-default btn-flat" id="sendEmail">Send
+                    <a href="{{route('newstagiaire' , ['id' => $condidat->id])}}" class="pull-right btn btn-default btn-flat">
+                        Confirmer en Stragiaire
+                    </a>
+                </div>
+                @elseif(Auth::User()->type==1)
+                <div class="box-footer clearfix">
+                    <button type="submit" class="pull-right btn btn-default btn-flat" id="sendEmail">Modifier
                         <i class="fa fa-arrow-circle-right"></i>
                     </button>
                 </div>
+                @endif
+                @if(Auth::User()->type==10)
+                <div class="box-footer clearfix">
+                    <button type="submit" class="pull-right btn btn-default btn-flat" id="sendEmail">Modifier
+                        <i class="fa fa-arrow-circle-right"></i>
+                    </button>
+                </div>
+                @endif
             </form>
         </div>
 
