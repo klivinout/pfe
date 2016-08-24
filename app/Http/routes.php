@@ -42,6 +42,20 @@ Route::group(['middleware' => 'auth','prefix' => 'admin'] , function () {
 		'as' => 'seennotification'
 	]);
 
+	Route::group(['prefix' => 'profile'] , function () {
+		Route::get('/',[
+			'uses' => 'AuthController@getProfile',
+			'as' => 'profile'
+		]);
+		Route::post('/',[
+			'uses' => 'AuthController@postProfile'
+		]);
+		Route::get('/image/{image}',[
+			'uses' => 'AuthController@getImage',
+			'as' => 'profileimage'
+		]);
+	});
+
 	Route::group(['prefix' => 'condidat'] , function () {
 		Route::get('/' , [
 			'uses' => 'CondidatController@getNew',
@@ -177,7 +191,7 @@ Route::group(['middleware' => 'auth','prefix' => 'admin'] , function () {
 			'uses' => 'ResponsableController@getNew',
 			'as' => 'newresponsable'
 		]);
-		Route::post('/nouveau/responsable',[
+		Route::post('/',[
 			'uses' => 'ResponsableController@postNewResp'
 		]);
 		Route::get('modifier/responsable/{id}',[

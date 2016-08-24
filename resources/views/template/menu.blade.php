@@ -93,6 +93,11 @@ function activeGroup($group) {
           </ul>
         </li>
         @endif
+        <li class="{{active('profile')}}">
+          <a href="{{route('profile')}}">
+            <span>Profile</span>
+          </a>
+        </li>
       </ul>
     </section>
     <!-- /.sidebar -->

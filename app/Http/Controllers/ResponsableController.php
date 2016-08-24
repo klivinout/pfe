@@ -20,7 +20,7 @@ class ResponsableController extends Controller
         return View::make('contents.responsable.new',['departements' => $departements]);
     }
 
-    public function postNewResp(Request $equest) {
+    public function postNewResp(Request $request) {
         DB::beginTransaction();
         try {
             $this->validate($request, [
@@ -44,6 +44,22 @@ class ResponsableController extends Controller
                 'created_at' => Date('Y-m-d H:i:s')
             ];
             $resp = DB::table('users')->insertGetId($insertResp);
+        } catch (Exception $e) {
+            DB::rollback();
+            dd($e);
+        }
+        DB::commit();
+        return redirect()->back()->with('info',"Responsable ajouter avec success");
+    }
+
+    public function postNewDept(Request $request) {
+        DB::beginTransaction();
+        try {
+            $this->validate($request, [
+                'dep_nom' => 'required'
+            ]);
+
+            DB::table('departements')->insert(['nom' => $request->input('dep_nom')]);
         } catch (Exception $e) {
             DB::rollback();
             dd($e);
@@ -92,11 +108,11 @@ class ResponsableController extends Controller
         ->join('departements as d','d.id','=','u.departement')
         ->select('u.id','u.nom','u.prenom','u.email','u.departement','d.nom as dept_nom')
         ->where('type',2)
-        ->where(function ($query) use($departement){
+        /*->where(function ($query) use ($departement = "tout"){
             if($departement != 'tout') {
                 $query->where('departement',$departement);
             }
-        })
+        })*/
         ->get();
         return View::make('contents.responsable.list',['resps'=>$resps]);
     }
