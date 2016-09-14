@@ -23,31 +23,39 @@
             </div>
             <form action="#" method="post">
                 <div class="box-body">
-                    <div class="col-sm-6 form-group{{ $errors->has('') ? ' has-error' : '' }}">
+                    <div class="col-sm-4 form-group{{ $errors->has('cin') ? ' has-error' : '' }}">
+                        <label for="cin">Code de la CIN : </label>
+                        <input type="text" pattern="^[a-zA-Z]{2}(?:\s*\d\s*){6}$" class="form-control" id="cin" name="cin" value="{{ Request::old('cin') ? old('cin') : '' }}" required>
+                    </div>
+                    <div class="col-sm-4 form-group{{ $errors->has('') ? ' has-error' : '' }}">
                         <label for="prenom">Prénom : </label>
                         <input type="text" class="form-control" id="prenom" name="prenom" value="{{ Request::old('prenom') ? old('prenom') : $condidat->prenom }}" required>
                     </div>
-                    <div class="col-sm-6 form-group{{ $errors->has('nom') ? ' has-error' : '' }}">
+                    <div class="col-sm-4 form-group{{ $errors->has('nom') ? ' has-error' : '' }}">
                         <label for="nom">Nom : </label>
                         <input type="text" class="form-control" id="nom" name="nom" value="{{ Request::old('nom') ? old('nom') : $condidat->nom }}" required>
                     </div>
-                    <div class="col-sm-6 form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+                    <div class="col-sm-4 form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                         <label for="email">Email : </label>
                         <input type="email" class="form-control" id="email" name="email" value="{{ Request::old('email') ? old('email') : $condidat->email }}" required>
                     </div>
-                    <div class="col-sm-6 form-group{{ $errors->has('etablissement') ? ' has-error' : '' }}">
-                        <label for="etablissement">Etablissement : </label>
-                        <input type="text" class="form-control" id="etablissement" name="etablissement" value="{{ Request::old('etablissement') ? old('etablissement') : $condidat->etablissement}}">
+                    <div class="col-sm-4 form-group{{ $errors->has('etablissement') ? ' has-error' : '' }}">
+                        <label for="etablissement">Etablissement : <a href="route('')">Ajouter ?</a></label>
+                        <select class="form-control" id="etablissement" name="etablissement">
+                            @foreach($etablissements as $etablissement)
+                            <option value="{{$etablissement->id}}">{{$etablissement->nom}}</option>
+                            @endforeach
+                        </select>
                     </div>
-                    <div class="col-sm-6 form-group{{ $errors->has('datefrom') ? ' has-error' : '' }}">
-                        <label for="datefrom">Date début :</label>
-                        <input type="date" class="form-control" id="datefrom" name="datefrom" value="{{ Request::old('datefrom') ? old('datefrom') : $condidat->datefrom}}" required>
+                    <div class="col-sm-4 form-group{{ $errors->has('etablissement') ? ' has-error' : '' }}">
+                        <label for="etablissement">Etablissement : <a href="route('')">Ajouter ?</a></label>
+                        <select class="form-control" id="etablissement" name="etablissement">
+                            @foreach($etablissements as $etablissement)
+                            <option value="{{$etablissement->id}}">{{$etablissement->nom}}</option>
+                            @endforeach
+                        </select>
                     </div>
-                    <div class="col-sm-6 form-group{{ $errors->has('dateto') ? ' has-error' : '' }}">
-                        <label for="dateend">Date fin :</label>
-                        <input type="date" class="form-control" id="dateend" name="dateend" value="{{ Request::old('dateend') ? old('dateend') : $condidat->dateend }}" required>
-                    </div>
-                    <div class="col-sm-6 form-group{{ $errors->has('division') ? ' has-error' : '' }}">
+                    <div class="col-sm-4 form-group{{ $errors->has('division') ? ' has-error' : '' }}">
                         <label for="division">Division : </label>
                         <select class="form-control" id="division" name="division">
                             <option disabled selected></option>
@@ -55,6 +63,29 @@
                             <option value="{{$dept->id}}">{{$dept->nom}}</option>
                             @endforeach
                         </select>
+                    </div>
+                    <div class="col-sm-4 form-group{{ $errors->has('datefrom') ? ' has-error' : '' }}">
+                        <label for="datefrom">Date début :</label>
+                        <input type="date" class="form-control" id="datefrom" name="datefrom" value="{{ Request::old('datefrom') ? old('datefrom') : $condidat->datefrom}}" required>
+                    </div>
+                    <div class="col-sm-4 form-group{{ $errors->has('dateto') ? ' has-error' : '' }}">
+                        <label for="dateend">Date fin :</label>
+                        <input type="date" class="form-control" id="dateend" name="dateend" value="{{ Request::old('dateend') ? old('dateend') : $condidat->dateend }}" required>
+                    </div>
+                    <div class="col-md-4 form-group{{ $errors->has('cv') ? ' has-error' : '' }}">
+                        @if(!isset($cv))
+                            <i class="fa fa-paperclip"></i> Curriculum vitae
+                            <input class="btn btn-default btn-file" type="file" name="cv" id="cv">
+                            <p class="help-block">Max. 5MB</p>
+                        @else
+                            <a href="route('download_cv')">
+                                <i class="fa fa-paperclip"></i> Curriculum vitae
+                            </a>
+                        @endif
+                        @if($errors->has('assurence'))
+                            <span class="help-block">{{ $errors->first('cv') }}</span>
+                        @endif
+                        
                     </div>
 
                     <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">

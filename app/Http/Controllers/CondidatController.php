@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 use View;
 use DB;
@@ -19,7 +21,33 @@ class CondidatController extends Controller
             return redirect()->back()->with('danger','vous n\'avez pas le droit d\'access');
         }
         $departements = DB::table('departements')->get();
-        return View::make('contents.condidate.new' , ['departements' => $departements]);
+        $etablissements = DB::table('etablissements')->get();
+        $villes = DB::table('villes')->get();
+        $diplomes = DB::table('diplomes')->get();
+        $data = [
+            'departements' => $departements,
+            'etablissements' => $etablissements,
+            'villes' => $villes,
+            'diplomes' => $diplomes,
+        ];
+        return View::make('contents.condidate.new' , $data);
+    }
+
+    public function getCurriculumVitae($id) {
+        if(Auth::User()->type ==3) {
+         return redirect()->back()->with('danger','vous n\'avez pas le droit d\'access');
+        }
+        try {
+            $document = DB::table('condidats')->where('id',$id)->value('documents');
+            $document = json_decode($document);
+
+            $file = Storage::disk('upload')
+                ->get('/documents_stagiaire/curriculumvitae/'.$document->cv->document);
+
+            return Response($file, 200 , ['Content-Type' => $document->cv->mime]);
+        } catch (Exception $e) {
+            return Response('Unautorized' , 401);
+        }
     }
 
     public function postNew(Request $request) {
@@ -30,26 +58,46 @@ class CondidatController extends Controller
         try {
             $this->validate($request, [
                 'nom' => 'required',
+                'cin' => 'required',
                 'prenom' => 'required',
                 'email' => 'required | email',
                 'etablissement' => 'required',
+                'ville' => 'required',
+                'diplome' => 'required',
+                'stg_diplome' => 'required',
                 'datefrom' => 'required | date',
                 'dateend' => 'required | date',
                 'division' => 'required',
                 'observation' => '',
             ]);
-            $insertCondidat = [
-                'nom' => $request->input('nom'),
-                'prenom' => $request->input('prenom'),
-                'email' => $request->input('email'),
-                'etablissement' => $request->input('etablissement'),
-                'datefrom' => $request->input('datefrom'),
-                'dateend' => $request->input('dateend'),
-                'departement' => $request->input('division'),
-                'observation' => $request->input('observation'),
-                'created_at' => Date('Y-m-d H:i:s')
-            ];
+
             $condidat = DB::table('condidats')->insertGetId($insertCondidat);
+
+            if($request->hasfile('cv')) {
+                $file = $request->file('cv');
+                $extension = $file->getClientOriginalExtension();
+                $mime_cv = $file->getClientMimeType();
+                $cv = Auth::User()->id.'-'.$request->input('nom').'-'.$request->input('prenom').'-cv-'.time().'.'.$extension;
+                Storage::disk('upload')->put('/documents_stagiaire/curriculumvitae/'.$cv,  File::get($file));
+                $cv = ['document' => $cv , 'mime' => $mime_cv];
+            }
+
+            $insertCondidat = [
+                    'nom' => $request->input('nom'),
+                    'prenom' => $request->input('prenom'),
+                    'email' => $request->input('email'),
+                    'etablissement' => $request->input('etablissement'),
+                    'cin' => $request->input('cin'),
+                    'ville' => $request->input('ville'),
+                    'diplome' => $request->input('diplome'),
+                    'stg_diplome' => $request->input('stg_diplome'),
+                    'datefrom' => $request->input('datefrom'),
+                    'dateend' => $request->input('dateend'),
+                    'departement' => $request->input('division'),
+                    'observation' => $request->input('observation'),
+                    'created_at' => Date('Y-m-d H:i:s')
+                ];
+
             $insertNotification = [
                 'broadcast' => 1,
                 'from' => Auth::User()->id,

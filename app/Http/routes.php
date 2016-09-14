@@ -79,6 +79,11 @@ Route::group(['middleware' => 'auth','prefix' => 'admin'] , function () {
 			'uses' => 'CondidatController@theList',
 			'as' => 'listcondidate'
 		]);
+
+		Route::get('/curriculumvitae/{id}' , [
+			'uses' => 'CondidatController@getCurriculumVitae',
+			'as' => 'downloadcurriculumvitae'
+		]);
 	});
 
 	Route::group(['prefix' => 'sujet'] , function () {
@@ -189,27 +194,97 @@ Route::group(['middleware' => 'auth','prefix' => 'admin'] , function () {
 	Route::group(['prefix' => 'parametre'] , function () {
 		Route::get('/',[
 			'uses' => 'ResponsableController@getNew',
-			'as' => 'newresponsable'
-		]);
-		Route::post('/',[
-			'uses' => 'ResponsableController@postNewResp'
-		]);
-		Route::get('modifier/responsable/{id}',[
-			'uses' => 'ResponsableController@getModify',
-			'as' => 'modifyresponsable'
-		]);
-		Route::post('modifier/responsable/{id}',[
-			'uses' => 'ResponsableController@postModify'
+			'as' => 'getparametres'
 		]);
 
-		Route::post('/nouveau/departement',[
-			'uses' => 'ResponsableController@postNewDept',
-			'as' => 'newdepartement'
-		]);
+		Route::group(['prefix' => 'responsable'] , function () {
+			Route::post('/',[
+				'uses' => 'ResponsableController@postNewResp',
+				'as' => 'newresponsable'
+			]);
 
-		Route::get('/responsable/liste',[
+			Route::post('modifier/{id}',[
+				'uses' => 'ResponsableController@postModifyResp',
+				'as' => 'modifyresponsable'
+			]);
+
+			Route::get('modifier/{id}',[
+				'uses' => 'ResponsableController@getModifyResp',
+				'as' => 'modifyresponsable'
+			]);
+
+		});
+
+		Route::group(['prefix' => 'ville'] , function () {
+			Route::post('/nouveau',[
+				'uses' => 'ResponsableController@postNewCity',
+				'as' => 'newcity'
+			]);
+			Route::post('/modifier/{id}',[
+				'uses' => 'ResponsableController@postModifyCity',
+				'as' => 'modifycity'
+			]);
+			Route::get('/modifier/{id}',[
+				'uses' => 'ResponsableController@getModifyCity',
+				'as' => 'modifycity'
+			]);
+
+		});
+
+		Route::group(['prefix' => 'etablissement'] , function () {
+
+			Route::post('/nouveau/etablissement',[
+				'uses' => 'ResponsableController@postNewSchool',
+				'as' => 'newschool'
+			]);
+			Route::post('/modifier/{id}',[
+				'uses' => 'ResponsableController@postModifySchool',
+				'as' => 'modifyschool'
+			]);
+			Route::get('/modifier/{id}',[
+				'uses' => 'ResponsableController@getModifySchool',
+				'as' => 'modifyschool'
+			]);
+
+		});
+
+		Route::group(['prefix' => 'departement'] , function () {
+			Route::post('/nouveau',[
+				'uses' => 'ResponsableController@postNewDept',
+				'as' => 'newdepartement'
+			]);
+
+			Route::post('/modifier/{id}',[
+				'uses' => 'ResponsableController@postModifyDept',
+				'as' => 'modifydepartement'
+			]);
+			Route::get('/modifier/{id}',[
+				'uses' => 'ResponsableController@getModifyDept',
+				'as' => 'modifydepartement'
+			]);
+		});
+
+		Route::group(['prefix' => 'diplome'] , function () {
+			Route::post('/nouveau',[
+				'uses' => 'ResponsableController@postNewDegree',
+				'as' => 'newdegree'
+			]);
+
+			Route::post('/modifier/{id}',[
+				'uses' => 'ResponsableController@postModifyDegree',
+				'as' => 'modifydegree'
+			]);
+
+			Route::get('/modifier/{id}',[
+				'uses' => 'ResponsableController@getModifyDegree',
+				'as' => 'modifydegree'
+			]);
+
+		});		
+
+		Route::get('/liste',[
 			'uses' => 'ResponsableController@theList',
-			'as' => 'listresponsable'
+			'as' => 'listparametres'
 		]);
 	});
 

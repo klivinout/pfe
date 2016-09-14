@@ -80,16 +80,16 @@ function activeGroup($group) {
         @if($privilege == 10)
         <li class="treeview{{activeGroup('parametre')}}">
           <a href="#">
-            <span>Responsables et Departements</span>
+            <span>Parametres</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a>
           <ul class="treeview-menu">
-            <li class="{{active('newresponsable')}}"><a href="{{route('newresponsable')}}"><i class="fa fa-list"></i> Nouveau Resp / Dept</a></li>
+            <li class="{{active('getparametres')}}"><a href="{{route('getparametres')}}"><i class="fa fa-list"></i> Nouveau</a></li>
           </ul>
           <ul class="treeview-menu">
-            <li class="{{active('listresponsable')}}"><a href="{{route('listresponsable')}}"><i class="fa fa-list"></i> Liste des Departements </a></li>
+            <li class="{{active('listparametres')}}"><a href="{{route('listparametres')}}"><i class="fa fa-list"></i> Liste des Departements </a></li>
           </ul>
         </li>
         @endif
