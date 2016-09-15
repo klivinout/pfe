@@ -72,29 +72,26 @@ class ResponsableController extends Controller
     public function postModifyResp($id,Request $request) {
         DB::beginTransaction();
         try {
-            $this->validate($request, [
+            /*$this->validate($request, [
                 'nom' => 'required',
                 'prenom' => 'required',
                 'email' => 'required | email',
                 'departement' => 'required | exists:departements,id'
-            ]);
+            ]);*/
             $updateResp = [
-                'nom' => $request->input('nom'),
-                'prenom' => $request->input('prenom'),
-                'email' => $request->input('email'),
-                'departement' => $request->input('departement'),
+                'nom' => $request->input('resp_nom'),
+                'prenom' => $request->input('resp_prenom'),
+                'email' => $request->input('resp_email'),
+                'departement' => $request->input('resp_dept'),
                 'updated_at' => Date('Y-m-d H:i:s')
             ];
-            $n = DB::table('users')->where('id',$id)->update($updateResp);
+            DB::table('users')->where('id',$id)->update($updateResp);
         } catch (Exception $e) {
             DB::rollback();
             dd($e);
         }
         DB::commit();
-        if($n == 1)
-            return redirect()->back()->with('info',"Responsable modifier avec success");
-        elseif($n==0)
-            return redirect()->back()->with('info',"Informations non modifier");
+        return redirect()->back();
     }
 
     public function postNewCity(Request $request) {

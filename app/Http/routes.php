@@ -203,14 +203,13 @@ Route::group(['middleware' => 'auth','prefix' => 'admin'] , function () {
 				'as' => 'newresponsable'
 			]);
 
-			Route::post('modifier/{id}',[
-				'uses' => 'ResponsableController@postModifyResp',
-				'as' => 'modifyresponsable'
-			]);
-
 			Route::get('modifier/{id}',[
 				'uses' => 'ResponsableController@getModifyResp',
 				'as' => 'modifyresponsable'
+			]);
+
+			Route::post('modifier/{id}',[
+				'uses' => 'ResponsableController@postModifyResp',
 			]);
 
 		});
@@ -220,15 +219,14 @@ Route::group(['middleware' => 'auth','prefix' => 'admin'] , function () {
 				'uses' => 'ResponsableController@postNewCity',
 				'as' => 'newcity'
 			]);
-			Route::post('/modifier/{id}',[
-				'uses' => 'ResponsableController@postModifyCity',
-				'as' => 'modifycity'
-			]);
+
 			Route::get('/modifier/{id}',[
 				'uses' => 'ResponsableController@getModifyCity',
 				'as' => 'modifycity'
 			]);
-
+			Route::post('/modifier/{id}',[
+				'uses' => 'ResponsableController@postModifyCity',
+			]);
 		});
 
 		Route::group(['prefix' => 'etablissement'] , function () {
@@ -237,13 +235,13 @@ Route::group(['middleware' => 'auth','prefix' => 'admin'] , function () {
 				'uses' => 'ResponsableController@postNewSchool',
 				'as' => 'newschool'
 			]);
-			Route::post('/modifier/{id}',[
-				'uses' => 'ResponsableController@postModifySchool',
-				'as' => 'modifyschool'
-			]);
+			
 			Route::get('/modifier/{id}',[
 				'uses' => 'ResponsableController@getModifySchool',
 				'as' => 'modifyschool'
+			]);
+			Route::post('/modifier/{id}',[
+				'uses' => 'ResponsableController@postModifySchool',
 			]);
 
 		});

@@ -71,7 +71,8 @@ class CondidatController extends Controller
                 'observation' => '',
             ]);
 
-            $condidat = DB::table('condidats')->insertGetId($insertCondidat);
+            
+            $cv =NULL;
 
             if($request->hasfile('cv')) {
                 $file = $request->file('cv');
@@ -79,24 +80,26 @@ class CondidatController extends Controller
                 $mime_cv = $file->getClientMimeType();
                 $cv = Auth::User()->id.'-'.$request->input('nom').'-'.$request->input('prenom').'-cv-'.time().'.'.$extension;
                 Storage::disk('upload')->put('/documents_stagiaire/curriculumvitae/'.$cv,  File::get($file));
-                $cv = ['document' => $cv , 'mime' => $mime_cv];
+                $cv = json_encode(['cv' => ['document' => $cv , 'mime' => $mime_cv]]);
             }
 
             $insertCondidat = [
-                    'nom' => $request->input('nom'),
-                    'prenom' => $request->input('prenom'),
-                    'email' => $request->input('email'),
-                    'etablissement' => $request->input('etablissement'),
-                    'cin' => $request->input('cin'),
-                    'ville' => $request->input('ville'),
-                    'diplome' => $request->input('diplome'),
-                    'stg_diplome' => $request->input('stg_diplome'),
-                    'datefrom' => $request->input('datefrom'),
-                    'dateend' => $request->input('dateend'),
-                    'departement' => $request->input('division'),
-                    'observation' => $request->input('observation'),
-                    'created_at' => Date('Y-m-d H:i:s')
-                ];
+                'nom' => $request->input('nom'),
+                'prenom' => $request->input('prenom'),
+                'email' => $request->input('email'),
+                'etablissement' => $request->input('etablissement'),
+                'cin' => $request->input('cin'),
+                'ville' => $request->input('ville'),
+                'diplome' => $request->input('diplome'),
+                'stg_diplome' => $request->input('stg_diplome'),
+                'datefrom' => $request->input('datefrom'),
+                'dateend' => $request->input('dateend'),
+                'departement' => $request->input('division'),
+                'documents' => $cv,
+                'observation' => $request->input('observation'),
+                'created_at' => Date('Y-m-d H:i:s')
+            ];
+            $condidat = DB::table('condidats')->insertGetId($insertCondidat);
 
             $insertNotification = [
                 'broadcast' => 1,
@@ -122,7 +125,17 @@ class CondidatController extends Controller
         }
         $departements = DB::table('departements')->get();
         $condidat = DB::table('condidats')->where('id',$id)->first();
-        return View::make('contents.condidate.modify' , ['departements' => $departements , 'condidat' => $condidat]);
+        $etablissements = DB::table('etablissements')->get();
+        $villes = DB::table('villes')->get();
+        $cv = $condidat->documents;
+        
+        return View::make('contents.condidate.modify' , [
+            'departements' => $departements , 
+            'condidat' => $condidat,
+            'etablissements' => $etablissements,
+            'villes' => $villes,
+            'cv' => $cv
+        ]);
     }
 
     public function postModify($id,Request $request) {
@@ -133,26 +146,64 @@ class CondidatController extends Controller
         try {
             $this->validate($request, [
                 'nom' => 'required',
+                'cin' => 'required',
                 'prenom' => 'required',
                 'email' => 'required | email',
                 'etablissement' => 'required',
+                'ville' => 'required',
+                'diplome' => 'required',
+                'stg_diplome' => 'required',
                 'datefrom' => 'required | date',
                 'dateend' => 'required | date',
                 'division' => 'required',
                 'observation' => '',
             ]);
-            $modifyCondidat = [
-                'nom' => $request->input('nom'),
-                'prenom' => $request->input('prenom'),
-                'email' => $request->input('email'),
-                'etablissement' => $request->input('etablissement'),
-                'datefrom' => $request->input('datefrom'),
-                'dateend' => $request->input('dateend'),
-                'departement' => $request->input('division'),
-                'observation' => $request->input('observation'),
-                'updated_at' => Date('Y-m-d H:i:s')
-            ];
+
+            if($request->hasfile('cv')) {
+                $file = $request->file('cv');
+                $extension = $file->getClientOriginalExtension();
+                $mime_cv = $file->getClientMimeType();
+                $cv = Auth::User()->id.'-'.$request->input('nom').'-'.$request->input('prenom').'-cv-'.time().'.'.$extension;
+                Storage::disk('upload')->put('/documents_stagiaire/curriculumvitae/'.$cv,  File::get($file));
+                $cv = json_encode(['cv' => ['document' => $cv , 'mime' => $mime_cv]]);
+
+                $modifyCondidat = [
+                    'nom' => $request->input('nom'),
+                    'prenom' => $request->input('prenom'),
+                    'email' => $request->input('email'),
+                    'etablissement' => $request->input('etablissement'),
+                    'cin' => $request->input('cin'),
+                    'ville' => $request->input('ville'),
+                    'diplome' => $request->input('diplome'),
+                    'stg_diplome' => $request->input('stg_diplome'),
+                    'datefrom' => $request->input('datefrom'),
+                    'dateend' => $request->input('dateend'),
+                    'departement' => $request->input('division'),
+                    'documents' => $cv,
+                    'observation' => $request->input('observation'),
+                    'updated_at' => Date('Y-m-d H:i:s')
+                ];
+            } else {
+                $modifyCondidat = [
+                    'nom' => $request->input('nom'),
+                    'prenom' => $request->input('prenom'),
+                    'email' => $request->input('email'),
+                    'etablissement' => $request->input('etablissement'),
+                    'cin' => $request->input('cin'),
+                    'ville' => $request->input('ville'),
+                    'diplome' => $request->input('diplome'),
+                    'stg_diplome' => $request->input('stg_diplome'),
+                    'datefrom' => $request->input('datefrom'),
+                    'dateend' => $request->input('dateend'),
+                    'departement' => $request->input('division'),
+                    'observation' => $request->input('observation'),
+                    'updated_at' => Date('Y-m-d H:i:s')
+                ];
+            }
+
+            
             DB::table('condidats')->where('id',$id)->update($modifyCondidat);
+
             $insertNotification = [
                 'broadcast' => 1,
                 'from' => Auth::User()->id,

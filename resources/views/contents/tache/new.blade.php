@@ -144,27 +144,27 @@
                                             <div class="timeline-footer" id="statutButtonsDiv{{$tache->id}}">
                                                 @if($statut==null || $statut==0 || $statut[0]==-1)
                                                 <button class="btn btn-primary btn-xs" id="examiner{{$tache->id}}" onclick="modifierTacheStatut({{$tache->id}},1)">
-                                                    <i class="fa fa-thumbs-o-up"></i>
+                                                    <i class="fa fa-thumbs-o-up"></i>Vérifier
                                                 </button>
                                                 <button class="btn btn-success btn-xs" id="confimer{{$tache->id}}" onclick="modifierTacheStatut({{$tache->id}},10)">
-                                                    <i class="fa fa-thumbs-up"></i>
+                                                    <i class="fa fa-thumbs-up"></i>Approuver
                                                 </button>
                                                 <button class="btn btn-danger btn-xs" id="refuser{{$tache->id}}" onclick="modifierTacheStatut({{$tache->id}},-1)">
-                                                    <i class="fa  fa-thumbs-down"></i>
+                                                    <i class="fa  fa-thumbs-down"></i>à Refaire
                                                 </button>
                                                 <button class="btn btn-primary btn-xs" onclick="modifierTache({{$tache->id}})">
                                                     <i class="fa  fa-pencil-square-o"></i>Modifier
                                                 </button>
                                                 @elseif($statut[0]==1)
                                                 <button class="btn btn-success btn-xs" id="confimer{{$tache->id}}" onclick="modifierTacheStatut({{$tache->id}},1)">
-                                                    <i class="fa fa-thumbs-o-up"></i>
+                                                    <i class="fa fa-thumbs-o-up"></i>Approuver
                                                 </button>
                                                 <button class="btn btn-danger btn-xs" id="refuser{{$tache->id}}" onclick="modifierTacheStatut({{$tache->id}},-1)">
-                                                    <i class="fa  fa-thumbs-down"></i>
+                                                    <i class="fa  fa-thumbs-down"></i>à Refaire
                                                 </button>
                                                 @elseif($statut[0]==10)
                                                 <button class="btn btn-success btn-xs" disabled>
-                                                    <i class="fa fa-thumbs-o-up"></i>
+                                                    <i class="fa fa-thumbs-o-up"></i>est approuvé
                                                 </button>
                                                 @endif
                                             </div>
@@ -220,13 +220,12 @@
                                         <input type="date" name="delai" id="delai" class="form-control" value="{{ Request::old('delai') ? old('delai') : '' }}">
                                     </div>
                                 @endif
-                                @if(isset($sujet))
+                                
                                 <div class="box-footer clearfix">
                                     <button type="submit" class="pull-right btn btn-default btn-flat">Ajouter
                                         <i class="fa fa-arrow-circle-right"></i>
                                     </button>
                                 </div>
-                                @endif
                             </div>
                         </form>
                     </div>
@@ -279,13 +278,13 @@
             $('#statutIcon'+tache).attr('class','fa fa-thumbs-down bg-red');
             $('#statutButtonsDiv'+tache).append('\
                 <button class="btn btn-primary btn-xs" id="examiner'+tache+'" onclick="modifierTacheStatut('+tache+',1)">\
-                    <i class="fa fa-thumbs-o-up"></i>\
+                    <i class="fa fa-thumbs-o-up"></i>Vérifier\
                 </button>\
                 <button class="btn btn-success btn-xs" id="confimer'+tache+'" onclick="modifierTacheStatut('+tache+',10)">\
-                    <i class="fa fa-thumbs-up"></i>\
+                    <i class="fa fa-thumbs-up"></i>Approuver\
                 </button>\
                 <button class="btn btn-danger btn-xs" id="refuser'+tache+'" onclick="modifierTacheStatut('+tache+',-1)">\
-                    <i class="fa  fa-thumbs-down"></i>\
+                    <i class="fa  fa-thumbs-down"></i>à Refaire\
                 </button>\
                 <button class="btn btn-primary btn-xs" onclick="modifierTache('+tache+')">\
                     <i class="fa  fa-pencil-square-o"></i>Modifier\
@@ -296,10 +295,10 @@
             $('#statutIcon'+tache).attr('class','fa fa-thumbs-o-up bg-blue');
             $('#statutButtonsDiv'+tache).append('\
                 <button class="btn btn-success btn-xs" id="confimer'+tache+'" onclick="modifierTacheStatut('+tache+',10)">\
-                    <i class="fa fa-thumbs-up"></i>\
+                    <i class="fa fa-thumbs-up"></i>Approuver\
                 </button>\
                 <button class="btn btn-danger btn-xs" id="refuser'+tache+'" onclick="modifierTacheStatut('+tache+',-1)">\
-                    <i class="fa  fa-thumbs-down"></i>\
+                    <i class="fa  fa-thumbs-down"></i>à Refaire\
                 </button>\
                 <button class="btn btn-primary btn-xs" onclick="modifierTache('+tache+')">\
                     <i class="fa  fa-pencil-square-o"></i>Modifier\
@@ -311,7 +310,7 @@
             $('#statutIcon'+tache).attr('class','fa fa-thumbs-up bg-green');
             $('#statutButtonsDiv'+tache).append('\
                 <button class="btn btn-success btn-xs" disabled>\
-                    <i class="fa fa-thumbs-o-up"></i>\
+                    <i class="fa fa-thumbs-o-up"></i>est approuvé\
                 </button>\
                 ');
         }

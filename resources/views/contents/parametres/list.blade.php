@@ -33,7 +33,7 @@
             <div class="box-body">
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <form methode="post" action="#" class="form-inline">
+                        <form method="get" action="#" class="form-inline">
                             <select class="form-control" name="type_list">
                                 <option selected disabled></option>
                                 <option value="responsables">responsables</option>
@@ -181,7 +181,7 @@
                 <div class="col-sm-6 well" id="div_modify" style="display : none;">
                     @if($type_list == 'responsables')
                     <h3 class="box-title">Modifier responsable : </h3>
-                    <form methode="post" action="{{route('modifyresponsable',['id' => ':id'])}}" id='modifyForm'>
+                    <form method="post" action="{{route('modifyresponsable',['id' => ':id'])}}" id='modifyForm'>
                         <div class="form-group{{ $errors->has('resp_nom') ? ' has-error' : '' }}">
                             <label for="resp_nom">Nom : </label>
                             <input type="text" class="form-control" name="resp_nom" id="resp_nom" value="{{ Request::old('resp_nom') ? old('resp_nom') : '' }}">
@@ -211,7 +211,7 @@
                     </form>
                     @elseif($type_list == 'etablissements')
                     <h3 class="box-title">Modifier etablissement : </h3>
-                    <form methode="post" action="{{route('modifyschool',['id' => ':id'])}}" id='modifyForm'>
+                    <form method="post" action="{{route('modifyschool',['id' => ':id'])}}" id='modifyForm'>
                         <div class="form-group{{ $errors->has('school_nom') ? ' has-error' : '' }}">
                             <label for="school_nom">Nom : </label>
                             <input type="text" class="form-control" name="school_nom" id="school_nom" value="{{ Request::old('school_nom') ? old('school_nom') : '' }}">
@@ -236,7 +236,7 @@
                     </form>
                     @elseif($type_list == 'divisions')
                     <h3 class="box-title">Modifier Division : </h3>
-                    <form methode="post" action="{{route('modifydepartement',['id' => ':id'])}}" id='modifyForm'>
+                    <form method="post" action="{{route('modifydepartement',['id' => ':id'])}}" id='modifyForm'>
                         <div class="form-group{{ $errors->has('dept_nom') ? ' has-error' : '' }}">
                             <label for="dept_nom">Nom : </label>
                             <input type="text" class="form-control" name="dept_nom" id="dept_nom" value="{{ Request::old('dept_nom') ? old('dept_nom') : '' }}">
@@ -249,7 +249,7 @@
                     </form>
                     @elseif($type_list == 'diplomes')
                     <h3 class="box-title">Modifier diplôme : </h3>
-                    <form methode="post" action="{{route('modifydegree',['id' => ':id'])}}" id='modifyForm'>
+                    <form method="post" action="{{route('modifydegree',['id' => ':id'])}}" id='modifyForm'>
                         <div class="form-group{{ $errors->has('diplome_nom') ? ' has-error' : '' }}">
                             <label for="diplome_nom">Nom : </label>
                             <input type="text" class="form-control" name="diplome_nom" id="diplome_nom" value="{{ Request::old('diplome_nom') ? old('diplome_nom') : '' }}">
@@ -262,7 +262,7 @@
                     </form>
                     @elseif($type_list == 'villes')
                     <h3 class="box-title">Modifier Ville : </h3>
-                    <form methode="post" action="{{route('modifycity',['id' => ':id'])}}" id='modifyForm'>
+                    <form method="post" action="{{route('modifycity',['id' => ':id'])}}" id='modifyForm'>
                         <div class="form-group{{ $errors->has('ville_nom') ? ' has-error' : '' }}">
                             <label for="ville_nom">Nom : </label>
                             <input type="text" class="form-control" name="ville_nom" id="ville_nom" value="{{ Request::old('ville_nom') ? old('ville_nom') : '' }}">
@@ -299,6 +299,9 @@
                     $('#resp_prenom').val(rep.data.prenom);
                     $('#resp_email').val(rep.data.email);
                     document.getElementById('resp_dept').value = rep.data.departement;
+                    var action = $('#modifyForm').attr('action');
+                    action = action.replace(':id',id);
+                    $('#modifyForm').attr('action',action);
                 }   
             });
         }
@@ -313,6 +316,9 @@
                     $('#school_adress').val(rep.data.adresse);
                     $('#school_email').val(rep.data.email);
                     $('#school_phone').val(rep.data.telephone);
+                    var action = $('#modifyForm').attr('action');
+                    action = action.replace(':id',id);
+                    $('#modifyForm').attr('action',action);
                 }
             });
         }
@@ -324,6 +330,9 @@
                     $('#div_modify').show();
                     
                     $('#dept_nom').val(rep.data.nom);
+                    var action = $('#modifyForm').attr('action');
+                    action = action.replace(':id',id);
+                    $('#modifyForm').attr('action',action);
                 }
             });
         }
@@ -335,6 +344,9 @@
                     $('#div_modify').show();
                     
                     $('#diplome_nom').val(rep.data.nom);
+                    var action = $('#modifyForm').attr('action');
+                    action = action.replace(':id',id);
+                    $('#modifyForm').attr('action',action);
                 }
             });
         }
@@ -347,6 +359,9 @@
                     
                     $('#ville_nom').val(rep.data.nom);
                     $('#ville_codepostal').val(rep.data.code_postal);
+                    var action = $('#modifyForm').attr('action');
+                    action = action.replace(':id',id);
+                    $('#modifyForm').attr('action',action);
                 }
             });
         }

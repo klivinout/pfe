@@ -25,7 +25,7 @@
                 <div class="box-body">
                     <div class="col-sm-4 form-group{{ $errors->has('cin') ? ' has-error' : '' }}">
                         <label for="cin">Code de la CIN : </label>
-                        <input type="text" pattern="^[a-zA-Z]{2}(?:\s*\d\s*){6}$" class="form-control" id="cin" name="cin" value="{{ Request::old('cin') ? old('cin') : '' }}" required>
+                        <input type="text" pattern="^[a-zA-Z]{2}(?:\s*\d\s*){6}$" class="form-control" id="cin" name="cin" value="{{ Request::old('cin') ? old('cin') : $condidat->CIN }}" required>
                     </div>
                     <div class="col-sm-4 form-group{{ $errors->has('') ? ' has-error' : '' }}">
                         <label for="prenom">Prénom : </label>
@@ -73,17 +73,14 @@
                         <input type="date" class="form-control" id="dateend" name="dateend" value="{{ Request::old('dateend') ? old('dateend') : $condidat->dateend }}" required>
                     </div>
                     <div class="col-md-4 form-group{{ $errors->has('cv') ? ' has-error' : '' }}">
-                        @if(!isset($cv))
-                            <i class="fa fa-paperclip"></i> Curriculum vitae
-                            <input class="btn btn-default btn-file" type="file" name="cv" id="cv">
-                            <p class="help-block">Max. 5MB</p>
-                        @else
-                            <a href="route('download_cv')">
+                        
+                        <i class="fa fa-paperclip"></i> Curriculum vitae
+                        <input class="btn btn-default btn-file" type="file" name="cv" id="cv">
+                        <p class="help-block">Max. 5MB</p>
+                        @if($cv != null)
+                            <a href="{{route('downloadcurriculumvitae',['id' => $condidat->id])}}" target="_blank">
                                 <i class="fa fa-paperclip"></i> Curriculum vitae
                             </a>
-                        @endif
-                        @if($errors->has('assurence'))
-                            <span class="help-block">{{ $errors->first('cv') }}</span>
                         @endif
                         
                     </div>

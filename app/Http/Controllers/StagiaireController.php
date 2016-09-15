@@ -23,8 +23,11 @@ class StagiaireController extends Controller
 		$condidat = DB::table('condidats')->where('id',$id)->first();
 		$departements = DB::table('departements')->get();
 		$document = 0;
-		if($condidat->documents != null) {
+		$document = json_decode($condidat->documents);
+		if(isset($document->assurence)) {
 			$document = json_decode($condidat->documents);
+		} else {
+			$document = 0;
 		}
 		return View::make('contents.stagiaire.new' , [
 			'condidat' => $condidat , 
@@ -84,7 +87,7 @@ class StagiaireController extends Controller
 					Storage::disk('upload')->put('/documents_stagiaire/assurence/'.$assurence,  File::get($file));
 					$assurence = ['document' => $assurence , 'mime' => $mime_assurence];
 				} else {
-					if($documents_old->assurence != null)
+					if(isset($documents_old->assurence))
 						$assurence = $documents_old->assurence;
 					else 
 						$assurence = null;
@@ -100,7 +103,7 @@ class StagiaireController extends Controller
 
 					$convention = ['document' => $convention , 'mime' => $mime_convention];
 				} else {
-					if($documents_old->convention != null)
+					if(isset($documents_old->convention))
 						$convention = $documents_old->convention;
 					else 
 						$convention = null;
