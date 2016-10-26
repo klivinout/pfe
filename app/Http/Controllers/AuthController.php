@@ -17,7 +17,7 @@ class AuthController extends Controller
 {
     public function getLogin() {
 
-        /*DB::table('users')->insert([
+       /* DB::table('users')->insert([
             'email' => 'admin@admin.com',
             'password' => bcrypt('12345'),
             'nom' => 'Benbakh',
