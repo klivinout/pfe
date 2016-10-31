@@ -45,9 +45,16 @@
                     </div>
                     <div class="col-sm-6 form-group{{ $errors->has('etablissement') ? ' has-error' : '' }}">
                         <label for="etablissement">Etablissement : </label>
-                        <input type="text" class="form-control" id="etablissement" name="etablissement" value="{{ Request::old('etablissement') ? old('etablissement') : $condidat->etablissement }}">
+                        <input type="text" class="form-control" id="etablissement" name="etablissement" value="{{ Request::old('etablissement') ? old('etablissement') : $condidat->etablissement_nom }}" readonly="true">
                         @if($errors->has('etablissement'))
                             <span class="help-block">{{ $errors->first('etablissement') }}</span>
+                        @endif
+                    </div>
+                    <div class="col-sm-6 form-group{{ $errors->has('ville') ? ' has-error' : '' }}">
+                        <label for="ville">Ville : </label>
+                        <input type="text" class="form-control" id="ville" name="ville" value="{{ Request::old('ville') ? old('ville') : $condidat->ville_nom }}" readonly="true">
+                        @if($errors->has('ville'))
+                            <span class="help-block">{{ $errors->first('ville') }}</span>
                         @endif
                     </div>
                     <div class="col-sm-6 form-group{{ $errors->has('datefrom') ? ' has-error' : '' }}">
@@ -135,7 +142,7 @@
                     <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
                 </div>
                 <div class="box-footer clearfix">
-                    <button type="submit" class="pull-right btn btn-default btn-flat">Send
+                    <button type="submit" class="pull-right btn btn-default btn-flat">Confirmer
                         <i class="fa fa-arrow-circle-right"></i>
                     </button>
                 </div>

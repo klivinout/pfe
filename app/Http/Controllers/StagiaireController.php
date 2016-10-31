@@ -20,10 +20,17 @@ class StagiaireController extends Controller
 		if(Auth::User()->type ==3) {
          return redirect()->back()->with('danger','vous n\'avez pas le droit d\'access');
      	}
-		$condidat = DB::table('condidats')->where('id',$id)->first();
+
+		$condidat = DB::table('condidats')
+			->join('villes','villes.id','=','condidats.ville')
+			->join('etablissements','etablissements.id','=','condidats.etablissement')
+			->where('condidats.id',$id)
+			->select('condidats.*','villes.nom as ville_nom','etablissements.nom as etablissement_nom')
+			->first();
 		$departements = DB::table('departements')->get();
 		$document = 0;
 		$document = json_decode($condidat->documents);
+
 		if(isset($document->assurence)) {
 			$document = json_decode($condidat->documents);
 		} else {

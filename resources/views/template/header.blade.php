@@ -118,13 +118,13 @@ $total_notif = count($notifs_dep)+count($notifs_user);
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="{{asset('assets/img/avatar.png')}}" class="user-image" alt="">
+              <img src="{{route('profileimage',['id'=>Auth::User()->id])}}" class="user-image" alt="">
               <span class="hidden-xs">{{Auth::User()->fullName()}}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
-                <img src="{{asset('assets/img/avatar.png')}}" class="img-circle" alt="">
+                <img src="{{route('profileimage',['id'=>Auth::User()->id])}}" class="img-circle" alt="">
 
                 <p>
                   {{Auth::User()->fullName()}} {{Auth::User()->deptName()}}

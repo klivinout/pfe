@@ -54,6 +54,7 @@ class SujetController extends Controller
                 'description' => $request->input('description'),
                 'pieces_jointe' => $attachement,
                 'mime' => $mime,
+                'etat' => 0,
                 'created_at' => Date('Y-m-d H:i:s')
             ]);
             $insertNotification = [
@@ -88,7 +89,7 @@ class SujetController extends Controller
         return Response($file, 200 , ['Content-Type' => $data->mime]);
     }
 
-    public function postModify($id) {
+    public function postModify($id,Request $request) {
         if(Auth::User()->type ==3) {
             return redirect()->back()->with('danger','vous n\'avez pas le droit d\'access');
         }
@@ -103,9 +104,7 @@ class SujetController extends Controller
             $mime = NULL;
 
             if($request->hasFile('attachement')) {
-                $this->validate($request , [
-                    'attachement' => 'mimes:jpeg,png,doc,docx,pdf'
-                ]);
+
                 $file = $request->file('attachement');
                 $extension = $file->getClientOriginalExtension();
                 $mime = $file->getClientMimeType();

@@ -22,6 +22,13 @@
                 <!-- /. tools -->
             </div>
             <form action="#" method="post">
+            @if(count($errors)>0)
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+            @endif
                 <div class="box-body">
                     <div class="col-sm-4 form-group{{ $errors->has('cin') ? ' has-error' : '' }}">
                         <label for="cin">Code de la CIN : </label>
@@ -52,6 +59,33 @@
                         <select class="form-control" id="etablissement" name="etablissement">
                             @foreach($etablissements as $etablissement)
                             <option value="{{$etablissement->id}}">{{$etablissement->nom}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-sm-4 form-group{{ $errors->has('diplome') ? ' has-error' : '' }}">
+                        <label for="diplome">diplome : </label>
+                        <select class="form-control" id="diplome" name="diplome">
+                            <option disabled selected></option>
+                            @foreach($diplomes as $diplome)
+                            <option value="{{$diplome->id}}">{{$diplome->nom}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-sm-4 form-group{{ $errors->has('stg_diplome') ? ' has-error' : '' }}">
+                        <label for="stg_diplome">Diplomé ou pas : </label>
+                        <select class="form-control" id="stg_diplome" name="stg_diplome">
+                            <option disabled selected></option>
+                            <option value="-1">Non</option>
+                            <option value="0">en cours</option>
+                            <option value="1">Oui</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4 form-group{{ $errors->has('ville') ? ' has-error' : '' }}">
+                        <label for="ville">Ville de résidence : </label>
+                        <select class="form-control" id="ville" name="ville">
+                            <option disabled selected></option>
+                            @foreach($villes as $ville)
+                            <option value="{{$ville->id}}">{{$ville->nom}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -116,6 +150,9 @@
 
 <script>
     document.getElementById('division').value = {{$condidat->departement}};
+    document.getElementById('stg_diplome').value = {{$condidat->stg_diplome}};
+    document.getElementById('ville').value = {{$condidat->ville}};
+    document.getElementById('diplome').value = {{$condidat->diplome}};
 </script>
 @include('template.footer')
   </body>

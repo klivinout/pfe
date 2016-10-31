@@ -54,7 +54,7 @@
                                 <label for="image">Image de profile : </label>
                                 <div class="user-header">
                                     
-                                    <img src="{{route('profileimage',['id'=>Auth::User()->id])}}" class="img-circle" alt="">
+                                    <img src="{{route('profileimage',['id'=>Auth::User()->id])}}" class="img-circle" alt="" style="width: 200px;height: auto;">
                                 </div>
                                 <input class="btn btn-default btn-file" type="file" name="image" id="image">
 

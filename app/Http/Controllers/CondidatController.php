@@ -20,6 +20,7 @@ class CondidatController extends Controller
         if(Auth::User()->type != 10 && Auth::User()->type !=1) {
             return redirect()->back()->with('danger','vous n\'avez pas le droit d\'access');
         }
+        
         $departements = DB::table('departements')->get();
         $etablissements = DB::table('etablissements')->get();
         $villes = DB::table('villes')->get();
@@ -128,12 +129,14 @@ class CondidatController extends Controller
         $etablissements = DB::table('etablissements')->get();
         $villes = DB::table('villes')->get();
         $cv = $condidat->documents;
-        
+        $diplomes = DB::table('diplomes')->get();
+
         return View::make('contents.condidate.modify' , [
             'departements' => $departements , 
             'condidat' => $condidat,
             'etablissements' => $etablissements,
             'villes' => $villes,
+            'diplomes' => $diplomes,
             'cv' => $cv
         ]);
     }
